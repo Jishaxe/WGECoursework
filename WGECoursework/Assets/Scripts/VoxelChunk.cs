@@ -5,8 +5,8 @@ using UnityEngine;
 
 public struct BlockData
 {
-    int x, y, z;
-    int type;
+    public int x, y, z;
+    public int type;
 }
 
 public class VoxelChunk : MonoBehaviour {
@@ -17,14 +17,11 @@ public class VoxelChunk : MonoBehaviour {
     public List<BlockData> blockData = new List<BlockData>();
 
 	// Use this for initialization
-	void Start () {
+	public void Initialize () {
         voxelGenerator = GetComponent<VoxelGenerator>();
         terrainArray = new int[chunkSize, chunkSize, chunkSize];
 
         voxelGenerator.Initialize();
-        //InitializeTerrainFromData();
-        //CreateTerrain();
-        //voxelGenerator.UpdateMesh();
 	}
 	
 	// Update is called once per frame
@@ -32,23 +29,13 @@ public class VoxelChunk : MonoBehaviour {
 		
 	}
 
-    void InitializeTerrainFromData()
+    public void InitializeTerrainFromData(BlockData[] blocks)
     {
-        for (int x = 0; x < terrainArray.GetLength(0); x++)
-        {
-            for (int y = 0; y < terrainArray.GetLength(1); y++)
-            {
-                for (int z = 0; z < terrainArray.GetLength(2); z++)
-                {
-                    terrainArray[x, y, z] = 1; // Assign the texture
-                }
-            }
-        }
-
+        foreach (BlockData block in blocks) terrainArray[block.x, block.y, block.z] = block.type;
     }
 
     // Create the individual vertices for the terrainArray
-    void BuildTerrain()
+    public void BuildChunk()
     {
         voxelGenerator.Clear();
 
@@ -124,6 +111,9 @@ public class VoxelChunk : MonoBehaviour {
                 }
             }
         }
+
+        // Now update the mesh
+        voxelGenerator.UpdateMesh();
     }
 }
 
