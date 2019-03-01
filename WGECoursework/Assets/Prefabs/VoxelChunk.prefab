@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 792431898666197810}
   - component: {fileID: 792431898666197809}
   - component: {fileID: 792431898666197808}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: VoxelChunk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,10 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925f592541c4007489c17256e5e8b9b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 0
-  sandLimit: 0.2
-  stoneLimit: 0.5
-  grassLimit: 0.8
 --- !u!33 &792431898666197811
 MeshFilter:
   m_ObjectHideFlags: 0

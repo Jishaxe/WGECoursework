@@ -11,6 +11,8 @@ public class ChunkLoader : MonoBehaviour
     public event LoadEvent OnLoadProgress;
     public event LoadEvent OnFinishLoading;
 
+    List<BlockData> blocks;
+    GameObject chunk;
 
     public GameObject voxelChunkPrefab;
 
@@ -19,7 +21,7 @@ public class ChunkLoader : MonoBehaviour
         OnStartLoading?.Invoke(0f);
 
         // We'll put our parsed blocks in here
-        List<BlockData> blocks = new List<BlockData>();
+        blocks = new List<BlockData>();
 
         FileStream fs = File.OpenRead(fileName);
         XmlReader reader = XmlReader.Create(fs);
@@ -66,7 +68,7 @@ public class ChunkLoader : MonoBehaviour
         Debug.Log("Loaded " + blocks.Count + " blocks from file " + fileName);
 
         // Instansiate the chunk gameobject and initialize the chunkscript
-        GameObject chunk = Instantiate(voxelChunkPrefab);
+        chunk = Instantiate(voxelChunkPrefab);
         VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
         chunkScript.Initialize();
 
@@ -75,6 +77,24 @@ public class ChunkLoader : MonoBehaviour
         chunkScript.BuildChunk();
 
         OnFinishLoading?.Invoke(1f);
+    }
+
+    public void Update()
+    {
+        // Used for testing the speed of recalculating the mesh. On my machine it takes about 12ms.
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            Debug.Log("rebuilding");
+            Destroy(chunk);
+            // Instansiate the chunk gameobject and initialize the chunkscript
+            chunk = Instantiate(voxelChunkPrefab);
+            VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
+            chunkScript.Initialize();
+
+            // toss the blocks into it and build
+            chunkScript.InitializeTerrainFromData(blocks.ToArray());
+            chunkScript.BuildChunk();
+        }
     }
 
     private void Start()

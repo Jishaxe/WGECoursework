@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,20 +15,18 @@ public class VoxelChunk : MonoBehaviour {
     int[,,] terrainArray;
     static int chunkSize = 16;
 
-    public List<BlockData> blockData = new List<BlockData>();
-
-	// Use this for initialization
-	public void Initialize () {
+    // Use this for initialization
+    public void Initialize() {
         voxelGenerator = GetComponent<VoxelGenerator>();
         terrainArray = new int[chunkSize, chunkSize, chunkSize];
 
         voxelGenerator.Initialize();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    }
+
+    // Update is called once per frame
+    void Update() {
+
+    }
 
     public void InitializeTerrainFromData(BlockData[] blocks)
     {
@@ -114,6 +113,27 @@ public class VoxelChunk : MonoBehaviour {
 
         // Now update the mesh
         voxelGenerator.UpdateMesh();
+    }
+
+    // Returns the block data at this position, or a BlockData with type of 0 if none exists
+    public BlockData GetBlockAt(Vector3 blockPosition)
+    {
+        // Type 0 means no block
+        int type = 0;
+        try
+        {
+            type = terrainArray[(int)blockPosition.x, (int)blockPosition.y, (int)blockPosition.z];
+
+        }
+        catch (IndexOutOfRangeException ex) { } // Catch the exception we'll hit if it's out of range
+
+        return new BlockData
+        {
+            x = (int)blockPosition.x,
+            y = (int)blockPosition.y,
+            z = (int)blockPosition.z,
+            type = type
+        };
     }
 }
 
