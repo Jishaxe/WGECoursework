@@ -12,7 +12,7 @@ public struct BlockData
 public class VoxelChunk : MonoBehaviour {
     VoxelGenerator voxelGenerator;
     int[,,] terrainArray;
-    int chunkSize = 16;
+    static int chunkSize = 16;
 
     public List<BlockData> blockData = new List<BlockData>();
 
