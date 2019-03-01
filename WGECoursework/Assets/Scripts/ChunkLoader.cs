@@ -1,20 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using UnityEngine;
 
 public class ChunkLoader : MonoBehaviour
 {
+    public delegate void LoadEvent(float percentage);
+    public event LoadEvent OnStartLoading;
+    public event LoadEvent OnLoadProgress;
+    public event LoadEvent OnFinishLoading;
+
+
     public GameObject voxelChunkPrefab;
 
-    public void LoadChunk(string fileName)
+    IEnumerator LoadChunk(string fileName)
     {
+        OnStartLoading?.Invoke(0f);
+
         // We'll put our parsed blocks in here
         List<BlockData> blocks = new List<BlockData>();
 
- 
-        XmlReader reader = XmlReader.Create(fileName);
-
+        FileStream fs = File.OpenRead(fileName);
+        XmlReader reader = XmlReader.Create(fs);
+        int progressMade = 0;
         // While we can still read elements
         while (reader.Read())
         {
@@ -40,10 +49,20 @@ public class ChunkLoader : MonoBehaviour
                 z = z,
                 type = type
             };
-
             blocks.Add(block);
+
+            progressMade++;
+
+            if (progressMade > 100)
+            {
+                progressMade = 0;
+                OnLoadProgress?.Invoke((float)fs.Position / (float)fs.Length);
+                yield return null;
+            }
         }
 
+        reader.Close();
+        
         Debug.Log("Loaded " + blocks.Count + " blocks from file " + fileName);
 
         // Instansiate the chunk gameobject and initialize the chunkscript
@@ -54,10 +73,12 @@ public class ChunkLoader : MonoBehaviour
         // toss the blocks into it and build
         chunkScript.InitializeTerrainFromData(blocks.ToArray());
         chunkScript.BuildChunk();
+
+        OnFinishLoading?.Invoke(1f);
     }
 
     private void Start()
     {
-        LoadChunk("AssessmentChunk2.xml");
+        StartCoroutine(LoadChunk("AssessmentChunk2.xml"));
     }
 }
