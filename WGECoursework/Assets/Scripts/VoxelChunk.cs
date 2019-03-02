@@ -10,7 +10,7 @@ public struct BlockData
     public int type;
     public override string ToString()
     {
-        return "(" + x + ", " + y + ", z" + ") - " + type;
+        return "(" + x + ", " + y + ", " + z + ") - " + type;
     }
     public bool IsInBounds()
     {

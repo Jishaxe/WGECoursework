@@ -42,33 +42,33 @@ public class PlayerScript : MonoBehaviour
             // Check if there is a block already occupying this position
             // probably would be quicker to not get the chunkscript every update but we don't know if we gonna support multiple chunks
             if (currentChunk == null) currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
-            BlockData blockAtPoint = currentChunk.GetBlockAt(cornerOfBlock);
+            currentSelectedBlock = currentChunk.GetBlockAt(cornerOfBlock);
 
             // If there is already a block at this point, add on the raycast normal so it pushes the selection box to the next empty space
             // as every block is one unit, this means we can just add on the normal with no changes and it works perfectly :)
-            if (blockAtPoint.type != 0)
+            if (currentSelectedBlock.type != 0)
             {
-                currentSelectedBlock = blockAtPoint;
                 cornerOfBlock += raycastHit.normal;
             }
-
-            blockAtPoint = currentChunk.GetBlockAt(cornerOfBlock);
 
             blockPlacementPoint = cornerOfBlock;
 
             blockShadow.SetActive(true);
             blockShadow.transform.position = cornerOfBlock + blockShadowOffset;
+
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                Debug.Log("raycast at " + raycastHit.point);
+                PlaceBlock(blockPlacementPoint, currentChunk, 1);
+            }
+            if (Input.GetMouseButtonDown(0)) DigBlock(currentSelectedBlock, currentChunk);
+
         } else
         {
             blockShadow.SetActive(false);
         }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            Debug.Log("raycast at " + raycastHit.point);
-            PlaceBlock(blockPlacementPoint, currentChunk, 1);
-        }
-        if (Input.GetMouseButtonDown(0)) DigBlock(currentSelectedBlock, currentChunk);
     }
 
     void PlaceBlock(Vector3 position, VoxelChunk chunk, int blockType)
@@ -93,6 +93,8 @@ public class PlayerScript : MonoBehaviour
 
     void DigBlock(BlockData block, VoxelChunk chunk)
     {
+        Debug.Log("Removing block " + block.ToString());
+        if (block.type == 0) return;
         chunk.RemoveBlockAt(new Vector3(block.x, block.y, block.z));
 
         chunk.BuildChunk();
