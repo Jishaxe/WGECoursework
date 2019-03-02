@@ -217,9 +217,9 @@ GameObject:
   - component: {fileID: 109415029}
   - component: {fileID: 108666101}
   - component: {fileID: 106260085}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 106160533}
   - component: {fileID: 110505939}
   - component: {fileID: 1098941971}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FirstPersonCharacter
   m_TagString: MainCamera
   m_Icon: {fileID: 0}

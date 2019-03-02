@@ -74,7 +74,12 @@ public class PlayerScript : MonoBehaviour
     void PlaceBlock(Vector3 position, VoxelChunk chunk, int blockType)
     {
         Debug.Log("Adding block at " + position + ", currently: " + chunk.GetBlockAt(position).type);
+        // Don't place if there is already a block at this position
         if (chunk.GetBlockAt(position).type != 0) return;
+
+        // Don't place if the new block would collide with the player
+
+        if (Physics.OverlapBox(position + new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity, LayerMask.GetMask("Player")).Length > 0) return;
         chunk.AddBlock(new BlockData
         {
             x = (int)position.x,
