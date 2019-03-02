@@ -177,11 +177,10 @@ public class VoxelChunk : MonoBehaviour {
     // Remove the block at the given position, don't forget to call BuildChunk() to update
     public void RemoveBlockAt(Vector3 position)
     {
-        try
-        {
-            terrainArray[(int)position.x, (int)position.y, (int)position.z] = 0;
-        }
-        catch (IndexOutOfRangeException ex) { } // Catch the exception we'll hit if it's out of range
+        List<BlockData> filteredBlocks = new List<BlockData>();
+
+        foreach (BlockData block in blocks) if (block.x != (int)position.x || block.y != (int)position.y || block.z != (int)position.z) filteredBlocks.Add(block);
+        this.blocks = filteredBlocks;
     }
 }
 
