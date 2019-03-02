@@ -16,6 +16,7 @@ public class PlayerScript : MonoBehaviour
     // The block that the player is looking at right now
     BlockData currentSelectedBlock;
 
+    VoxelChunk currentChunk;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class PlayerScript : MonoBehaviour
 
         Debug.DrawRay(ray.origin, ray.direction * 100, Color.red);
 
-        if (Physics.Raycast(ray, out raycastHit, 10f, LayerMask.GetMask("Blocks")))
+        if (Physics.Raycast(ray, out raycastHit, 4f, LayerMask.GetMask("Blocks")))
         {
             Vector3 cornerOfBlock = new Vector3(Mathf.Floor(raycastHit.point.x),
                                               Mathf.Floor(raycastHit.point.y),
@@ -40,15 +41,20 @@ public class PlayerScript : MonoBehaviour
 
             // Check if there is a block already occupying this position
             // probably would be quicker to not get the chunkscript every update but we don't know if we gonna support multiple chunks
-            VoxelChunk chunkScript = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
-            BlockData blockAtPoint = chunkScript.GetBlockAt(cornerOfBlock);
+            if (currentChunk == null) currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
+            BlockData blockAtPoint = currentChunk.GetBlockAt(cornerOfBlock);
 
             // If there is already a block at this point, add on the raycast normal so it pushes the selection box to the next empty space
             // as every block is one unit, this means we can just add on the normal with no changes and it works perfectly :)
             if (blockAtPoint.type != 0)
             {
+                currentSelectedBlock = blockAtPoint;
                 cornerOfBlock += raycastHit.normal;
             }
+
+            blockAtPoint = currentChunk.GetBlockAt(cornerOfBlock);
+
+            blockPlacementPoint = cornerOfBlock;
 
             blockShadow.SetActive(true);
             blockShadow.transform.position = cornerOfBlock + blockShadowOffset;
@@ -56,6 +62,35 @@ public class PlayerScript : MonoBehaviour
         {
             blockShadow.SetActive(false);
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("raycast at " + raycastHit.point);
+            PlaceBlock(blockPlacementPoint, currentChunk, 1);
+        }
+        if (Input.GetMouseButtonDown(0)) DigBlock(currentSelectedBlock, currentChunk);
+    }
+
+    void PlaceBlock(Vector3 position, VoxelChunk chunk, int blockType)
+    {
+        Debug.Log("Adding block at " + position + ", currently: " + chunk.GetBlockAt(position).type);
+        if (chunk.GetBlockAt(position).type != 0) return;
+        chunk.AddBlock(new BlockData
+        {
+            x = (int)position.x,
+            y = (int)position.y,
+            z = (int)position.z,
+            type = blockType
+        });
+
+        chunk.BuildChunk();
+    }
+
+    void DigBlock(BlockData block, VoxelChunk chunk)
+    {
+        chunk.RemoveBlockAt(new Vector3(block.x, block.y, block.z));
+
+        chunk.BuildChunk();
     }
 }
 

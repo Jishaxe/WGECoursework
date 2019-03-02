@@ -49,17 +49,21 @@ public class VoxelGenerator : MonoBehaviour {
         vertexList.Clear();
         triIndexList.Clear();
         UVList.Clear();
+        numQuads = 0;
     }
 
     // Brings the vertex data over to the mesh filter and recalculates normals
     public void UpdateMesh()
     {
+        //Debug.Log("vertices: " + vertexList.Count + ", indices: " + triIndexList.Count + ", uvs: " + UVList.Count);
+        meshCollider.sharedMesh = null;
+        Debug.Log("vertices: " + vertexList.ToArray().Length + ", indices: " + triIndexList.ToArray().Length + ", uvs: " + UVList.ToArray().Length);
         mesh.vertices = vertexList.ToArray();
         mesh.triangles = triIndexList.ToArray();
         mesh.uv = UVList.ToArray();
         mesh.RecalculateNormals();
 
-        meshCollider.sharedMesh = null;
+    
         meshCollider.sharedMesh = mesh;
     }
 

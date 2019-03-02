@@ -8,12 +8,23 @@ public struct BlockData
 {
     public int x, y, z;
     public int type;
+    public override string ToString()
+    {
+        return "(" + x + ", " + y + ", z" + ") - " + type;
+    }
+    public bool IsInBounds()
+    {
+        return (x < VoxelChunk.chunkSize && y < VoxelChunk.chunkSize && z < VoxelChunk.chunkSize && x >= 0 && y >= 0 && z >= 0);
+    }
 }
 
 public class VoxelChunk : MonoBehaviour {
     VoxelGenerator voxelGenerator;
     int[,,] terrainArray;
-    static int chunkSize = 16;
+    public static int chunkSize = 16;
+
+    // Mutable block data - call BuildChunk() after modifying
+    List<BlockData> blocks = new List<BlockData>();
 
     // Use this for initialization
     public void Initialize() {
@@ -23,20 +34,36 @@ public class VoxelChunk : MonoBehaviour {
         voxelGenerator.Initialize();
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    public void InitializeTerrainFromData(BlockData[] blocks)
+    // Update the block list and discard any not within the blocksize
+    public void SetBlocks(List<BlockData> newBlocks)
     {
-        foreach (BlockData block in blocks) terrainArray[block.x, block.y, block.z] = block.type;
+        List<BlockData> filteredBlocks = new List<BlockData>();
+
+        foreach (BlockData block in newBlocks)
+        {
+            if (!block.IsInBounds())
+            {
+                Debug.Log("Block " + block.x + " " + block.y + " " + block.z + " is outside block dimensions, discarding");
+                continue;
+            }
+
+            filteredBlocks.Add(block);
+        }
+
+        this.blocks = filteredBlocks;
     }
 
-    // Create the individual vertices for the terrainArray
+    // Create the individual vertices for the terrainArray from the blocks 
     public void BuildChunk()
     {
+        terrainArray = new int[chunkSize, chunkSize, chunkSize];
         voxelGenerator.Clear();
+
+        foreach (BlockData block in blocks)
+        {
+            if (terrainArray[block.x, block.y, block.z] != 0) Debug.Log(block.ToString() + " ALREADY EXISTS");
+            terrainArray[block.x, block.y, block.z] = block.type;
+        }
 
         // iterate horizontally on width
         for (int x = 0; x < terrainArray.GetLength(0); x++)
@@ -123,7 +150,6 @@ public class VoxelChunk : MonoBehaviour {
         try
         {
             type = terrainArray[(int)blockPosition.x, (int)blockPosition.y, (int)blockPosition.z];
-
         }
         catch (IndexOutOfRangeException ex) { } // Catch the exception we'll hit if it's out of range
 
@@ -134,6 +160,28 @@ public class VoxelChunk : MonoBehaviour {
             z = (int)blockPosition.z,
             type = type
         };
+    }
+
+    // Add block to the blocks list, don't forget to call BuildChunk() to update
+    public void AddBlock(BlockData block)
+    {
+        if (!block.IsInBounds())
+        {
+            Debug.Log("Block " + block.x + " " + block.y + " " + block.z + " is outside block dimensions, not adding");
+            return; // Don't add if outside the chunk
+        }
+
+        blocks.Add(block);
+    }
+
+    // Remove the block at the given position, don't forget to call BuildChunk() to update
+    public void RemoveBlockAt(Vector3 position)
+    {
+        try
+        {
+            terrainArray[(int)position.x, (int)position.y, (int)position.z] = 0;
+        }
+        catch (IndexOutOfRangeException ex) { } // Catch the exception we'll hit if it's out of range
     }
 }
 

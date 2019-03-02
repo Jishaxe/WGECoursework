@@ -72,8 +72,9 @@ public class ChunkLoader : MonoBehaviour
         VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
         chunkScript.Initialize();
 
+
         // toss the blocks into it and build
-        chunkScript.InitializeTerrainFromData(blocks.ToArray());
+        chunkScript.SetBlocks(blocks);
         chunkScript.BuildChunk();
 
         OnFinishLoading?.Invoke(1f);
@@ -81,24 +82,10 @@ public class ChunkLoader : MonoBehaviour
 
     public void Update()
     {
-        // Used for testing the speed of recalculating the mesh. On my machine it takes about 12ms.
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            Debug.Log("rebuilding");
-            Destroy(chunk);
-            // Instansiate the chunk gameobject and initialize the chunkscript
-            chunk = Instantiate(voxelChunkPrefab);
-            VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
-            chunkScript.Initialize();
-
-            // toss the blocks into it and build
-            chunkScript.InitializeTerrainFromData(blocks.ToArray());
-            chunkScript.BuildChunk();
-        }
     }
 
     private void Start()
     {
-        StartCoroutine(LoadChunk("AssessmentChunk2.xml"));
+        StartCoroutine(LoadChunk("AssessmentChunk3.xml"));
     }
 }
