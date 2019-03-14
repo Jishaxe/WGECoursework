@@ -67,17 +67,27 @@ public class ChunkLoader : MonoBehaviour
         
         Debug.Log("Loaded " + blocks.Count + " blocks from file " + fileName);
 
-        // Instansiate the chunk gameobject and initialize the chunkscript
-        chunk = Instantiate(voxelChunkPrefab);
-        VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
-        chunkScript.Initialize();
+        for (int x = 0; x < 10; x++)
+        {
+            for (int y = 0; y < 10; y++)
+            {
+                // Instansiate the chunk gameobject and initialize the chunkscript
+                chunk = Instantiate(voxelChunkPrefab);
+                chunk.transform.position = new Vector3(x * VoxelChunk.chunkSize, 0, y * VoxelChunk.chunkSize);
+                VoxelChunk chunkScript = chunk.GetComponent<VoxelChunk>();
+                chunkScript.Initialize();
 
 
-        // toss the blocks into it and build
-        chunkScript.SetBlocks(blocks);
-        chunkScript.BuildChunk();
+                // toss the blocks into it and build
+                chunkScript.SetBlocks(blocks);
+                chunkScript.BuildChunk();
+
+
+            }
+        }
 
         OnFinishLoading?.Invoke(1f);
+
     }
 
     public void Update()

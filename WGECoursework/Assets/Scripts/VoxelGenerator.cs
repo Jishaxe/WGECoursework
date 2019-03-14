@@ -21,7 +21,7 @@ public class VoxelGenerator : MonoBehaviour {
     int numQuads = 0;
 
     // Converts a Block enum to a UV coord
-    public Vector2 Block2UV(Block type)
+    public static Vector2 Block2UV(Block type)
     {
         switch (type)
         {

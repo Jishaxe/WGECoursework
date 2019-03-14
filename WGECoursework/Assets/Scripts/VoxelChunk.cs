@@ -105,7 +105,7 @@ public class VoxelChunk : MonoBehaviour {
                                 break;
                         }
 
-                        Vector2 uvs = voxelGenerator.Block2UV(tex);
+                        Vector2 uvs = VoxelGenerator.Block2UV(tex);
                         //voxelGenerator.CreateVoxel(x, y, z, tex);
 
                         // check if we need to draw the positive x face

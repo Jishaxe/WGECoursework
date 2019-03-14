@@ -40,6 +40,9 @@ public class PlayerScript : MonoBehaviour
 
         if (Physics.Raycast(ray, out raycastHit, 4f, LayerMask.GetMask("Blocks")))
         {
+            currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
+
+            raycastHit.point = currentChunk.transform.InverseTransformPoint(raycastHit.point);
             Vector3 cornerOfBlock = raycastHit.point - (raycastHit.normal / 2);
             cornerOfBlock = new Vector3(Mathf.Floor(cornerOfBlock.x),
                                               Mathf.Floor(cornerOfBlock.y),
@@ -47,7 +50,7 @@ public class PlayerScript : MonoBehaviour
 
             // Check if there is a block already occupying this position
             // probably would be quicker to not get the chunkscript every update but we don't know if we gonna support multiple chunks
-            if (currentChunk == null) currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
+
             currentSelectedBlock = currentChunk.GetBlockAt(cornerOfBlock);
             currentSelectedBlock.DrawDebugLines();
 
@@ -65,7 +68,7 @@ public class PlayerScript : MonoBehaviour
             }
 
             blockShadow.SetActive(true);
-            blockShadow.transform.position = blockPlacementPoint; //+ blockShadowOffset;
+            blockShadow.transform.position = currentChunk.transform.TransformPoint(blockPlacementPoint); //+ blockShadowOffset;
 
 
             if (Input.GetMouseButtonUp(1))
@@ -83,13 +86,15 @@ public class PlayerScript : MonoBehaviour
 
     private void OnGUI()
     {
-        Handles.Label(new Vector3(currentSelectedBlock.x, currentSelectedBlock.y, currentSelectedBlock.z), currentSelectedBlock.ToString());
-        Handles.Label(blockPlacementPoint + new Vector3(0, 0.2f, 0), blockPlacementPoint.ToString());
+        if (currentChunk == null) return;
+        Handles.Label(currentChunk.transform.TransformPoint(new Vector3(currentSelectedBlock.x, currentSelectedBlock.y, currentSelectedBlock.z)), currentSelectedBlock.ToString());
+        Handles.Label(currentChunk.transform.TransformPoint(blockPlacementPoint) + new Vector3(0, 0.2f, 0), blockPlacementPoint.ToString());
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(blockPlacementPoint, 0.1f);
+        if (currentChunk == null) return;
+        Gizmos.DrawSphere(currentChunk.transform.TransformPoint(blockPlacementPoint), 0.1f);
     }
 
     void PlaceBlock(Vector3 position, VoxelChunk chunk, int blockType)
@@ -100,7 +105,7 @@ public class PlayerScript : MonoBehaviour
 
         // Don't place if the new block would collide with the player
 
-        if (Physics.OverlapBox(position + new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity, LayerMask.GetMask("Player")).Length > 0) return;
+        if (Physics.OverlapBox(currentChunk.transform.TransformPoint(position) + new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0.5f, 0.5f, 0.5f), Quaternion.identity, LayerMask.GetMask("Player")).Length > 0) return;
         chunk.AddBlock(new BlockData
         {
             x = (int)position.x,
