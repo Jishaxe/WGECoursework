@@ -55,15 +55,13 @@ public class VoxelGenerator : MonoBehaviour {
     // Brings the vertex data over to the mesh filter and recalculates normals
     public void UpdateMesh()
     {
-        //Debug.Log("vertices: " + vertexList.Count + ", indices: " + triIndexList.Count + ", uvs: " + UVList.Count);
-        meshCollider.sharedMesh = null;
-        Debug.Log("vertices: " + vertexList.ToArray().Length + ", indices: " + triIndexList.ToArray().Length + ", uvs: " + UVList.ToArray().Length);
+        mesh.Clear();
         mesh.vertices = vertexList.ToArray();
         mesh.triangles = triIndexList.ToArray();
         mesh.uv = UVList.ToArray();
         mesh.RecalculateNormals();
-
-    
+        Debug.Log("vertices: " + vertexList.ToArray().Length + ", indices: " + triIndexList.ToArray().Length + ", uvs: " + UVList.ToArray().Length);
+        meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mesh;
     }
 

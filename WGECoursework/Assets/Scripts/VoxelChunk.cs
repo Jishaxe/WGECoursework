@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -15,6 +16,12 @@ public struct BlockData
     public bool IsInBounds()
     {
         return (x < VoxelChunk.chunkSize && y < VoxelChunk.chunkSize && z < VoxelChunk.chunkSize && x >= 0 && y >= 0 && z >= 0);
+    }
+    public void DrawDebugLines()
+    {
+        Debug.DrawLine(new Vector3(x, y, z), new Vector3(x, y + 1, z), Color.green);
+        Debug.DrawLine(new Vector3(x, y, z), new Vector3(x + 1, y, z), Color.red);
+        Debug.DrawLine(new Vector3(x, y, z), new Vector3(x, y, z + 1), Color.blue);
     }
 }
 
@@ -171,6 +178,7 @@ public class VoxelChunk : MonoBehaviour {
             return; // Don't add if outside the chunk
         }
 
+        Debug.Log("adding " + block.ToString());
         blocks.Add(block);
     }
 

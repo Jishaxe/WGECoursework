@@ -86,6 +86,6 @@ public class ChunkLoader : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(LoadChunk("AssessmentChunk3.xml"));
+        StartCoroutine(LoadChunk("AssessmentChunk2.xml"));
     }
 }

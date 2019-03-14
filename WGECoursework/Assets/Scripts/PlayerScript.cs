@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -18,6 +19,10 @@ public class PlayerScript : MonoBehaviour
 
     VoxelChunk currentChunk;
 
+    public delegate void BlockPlacementEvent(int blockType);
+    public static event BlockPlacementEvent OnBlockPlacement;
+    public static event BlockPlacementEvent OnBlockRemoval;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +31,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit raycastHit;
@@ -35,40 +40,56 @@ public class PlayerScript : MonoBehaviour
 
         if (Physics.Raycast(ray, out raycastHit, 4f, LayerMask.GetMask("Blocks")))
         {
-            Vector3 cornerOfBlock = new Vector3(Mathf.Floor(raycastHit.point.x),
-                                              Mathf.Floor(raycastHit.point.y),
-                                              Mathf.Floor(raycastHit.point.z));
+            Vector3 cornerOfBlock = raycastHit.point - (raycastHit.normal / 2);
+            cornerOfBlock = new Vector3(Mathf.Floor(cornerOfBlock.x),
+                                              Mathf.Floor(cornerOfBlock.y),
+                                              Mathf.Floor(cornerOfBlock.z));
 
             // Check if there is a block already occupying this position
             // probably would be quicker to not get the chunkscript every update but we don't know if we gonna support multiple chunks
             if (currentChunk == null) currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
             currentSelectedBlock = currentChunk.GetBlockAt(cornerOfBlock);
+            currentSelectedBlock.DrawDebugLines();
 
+            blockPlacementPoint = cornerOfBlock;
+
+
+            
             // If there is already a block at this point, add on the raycast normal so it pushes the selection box to the next empty space
             // as every block is one unit, this means we can just add on the normal with no changes and it works perfectly :)
             if (currentSelectedBlock.type != 0)
             {
-                cornerOfBlock += raycastHit.normal;
+                blockPlacementPoint = raycastHit.point + (raycastHit.normal / 2);
+                blockPlacementPoint = new Vector3(Mathf.Floor(blockPlacementPoint.x), Mathf.Floor(blockPlacementPoint.y), Mathf.Floor(blockPlacementPoint.z));
+                Debug.DrawLine(cornerOfBlock, blockPlacementPoint, Color.yellow);
             }
-
-            blockPlacementPoint = cornerOfBlock;
 
             blockShadow.SetActive(true);
-            blockShadow.transform.position = cornerOfBlock + blockShadowOffset;
+            blockShadow.transform.position = blockPlacementPoint; //+ blockShadowOffset;
 
 
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonUp(1))
             {
-                Debug.Log("raycast at " + raycastHit.point);
                 PlaceBlock(blockPlacementPoint, currentChunk, 1);
             }
-            if (Input.GetMouseButtonDown(0)) DigBlock(currentSelectedBlock, currentChunk);
+            if (Input.GetMouseButtonUp(0)) DigBlock(currentSelectedBlock, currentChunk);
 
         } else
         {
             blockShadow.SetActive(false);
         }
 
+    }
+
+    private void OnGUI()
+    {
+        Handles.Label(new Vector3(currentSelectedBlock.x, currentSelectedBlock.y, currentSelectedBlock.z), currentSelectedBlock.ToString());
+        Handles.Label(blockPlacementPoint + new Vector3(0, 0.2f, 0), blockPlacementPoint.ToString());
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(blockPlacementPoint, 0.1f);
     }
 
     void PlaceBlock(Vector3 position, VoxelChunk chunk, int blockType)
@@ -88,6 +109,8 @@ public class PlayerScript : MonoBehaviour
             type = blockType
         });
 
+        // Pass in the placed block type (AudioManager uses this to determine which placing sound to place)
+        OnBlockPlacement(blockType);
         chunk.BuildChunk();
     }
 
@@ -96,6 +119,9 @@ public class PlayerScript : MonoBehaviour
         Debug.Log("Removing block " + block.ToString());
         if (block.type == 0) return;
         chunk.RemoveBlockAt(new Vector3(block.x, block.y, block.z));
+
+        // Pass in the destroyed block type (AudioManager uses this to determine which destroying sound to place)
+        OnBlockRemoval(block.type);
 
         chunk.BuildChunk();
     }
