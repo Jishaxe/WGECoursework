@@ -19,7 +19,7 @@ public class PlayerScript : MonoBehaviour
 
     VoxelChunk currentChunk;
 
-    public delegate void BlockPlacementEvent(int blockType);
+    public delegate void BlockPlacementEvent(int blockType, Vector3 location);
     public static event BlockPlacementEvent OnBlockPlacement;
     public static event BlockPlacementEvent OnBlockRemoval;
 
@@ -42,6 +42,7 @@ public class PlayerScript : MonoBehaviour
         {
             currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
 
+            if (currentChunk == null) return;
             raycastHit.point = currentChunk.transform.InverseTransformPoint(raycastHit.point);
             Vector3 cornerOfBlock = raycastHit.point - (raycastHit.normal / 2);
             cornerOfBlock = new Vector3(Mathf.Floor(cornerOfBlock.x),
@@ -115,7 +116,7 @@ public class PlayerScript : MonoBehaviour
         });
 
         // Pass in the placed block type (AudioManager uses this to determine which placing sound to place)
-        OnBlockPlacement(blockType);
+        OnBlockPlacement(blockType, chunk.transform.TransformPoint(position));
         chunk.BuildChunk();
     }
 
@@ -126,7 +127,7 @@ public class PlayerScript : MonoBehaviour
         chunk.RemoveBlockAt(new Vector3(block.x, block.y, block.z));
 
         // Pass in the destroyed block type (AudioManager uses this to determine which destroying sound to place)
-        OnBlockRemoval(block.type);
+        OnBlockRemoval(block.type, chunk.transform.TransformPoint(new Vector3(block.x, block.y, block.z)));
 
         chunk.BuildChunk();
     }

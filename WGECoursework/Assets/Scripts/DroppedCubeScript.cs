@@ -7,11 +7,18 @@ public class DroppedCubeScript : MonoBehaviour
     public Block type;
     Mesh mesh;
 
+    public float floatHeight;
+    public float floatForce;
+
+    BoxCollider collider;
+    Rigidbody rb;
     VoxelGenerator voxelGenerator;
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        collider = GetComponent<BoxCollider>();
         mesh = GetComponent<MeshFilter>().mesh;
         voxelGenerator = GetComponent<VoxelGenerator>();
         voxelGenerator.Initialize();
@@ -31,6 +38,17 @@ public class DroppedCubeScript : MonoBehaviour
 
     void Update()
     {
-        
+        Ray ray = new Ray(collider.bounds.center, -this.transform.up);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, floatHeight, LayerMask.GetMask("Blocks"))) {
+            Debug.DrawLine(collider.bounds.center, collider.bounds.center - (this.transform.up * floatHeight));
+
+            rb.AddForce(this.transform.up * floatForce, ForceMode.Acceleration);
+            rb.transform.eulerAngles += new Vector3(0, 1, 0);
+        } else
+        {
+            rb.AddForce(-this.transform.up * floatForce, ForceMode.Acceleration);
+        }
     }
 }

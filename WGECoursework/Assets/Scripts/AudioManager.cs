@@ -20,13 +20,13 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    void OnBlockRemoval(int type)
+    void OnBlockRemoval(int type, Vector3 position)
     {
         // Play the relevant removal sound
         audioSource.PlayOneShot(blockRemovalSounds[type]);
     }
 
-    void OnBlockPlacement(int type)
+    void OnBlockPlacement(int type, Vector3 position)
     {
         // Play the relevant placement sounds
         audioSource.PlayOneShot(blockPlacementSounds[type]);

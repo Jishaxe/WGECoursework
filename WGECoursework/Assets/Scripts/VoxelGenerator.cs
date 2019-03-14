@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum Block
 {
-    DIRT, SAND, GRASS, STONE
+    GRASS, DIRT, SAND, STONE
 }
 
 
@@ -60,7 +60,7 @@ public class VoxelGenerator : MonoBehaviour {
         mesh.triangles = triIndexList.ToArray();
         mesh.uv = UVList.ToArray();
         mesh.RecalculateNormals();
-        Debug.Log("vertices: " + vertexList.ToArray().Length + ", indices: " + triIndexList.ToArray().Length + ", uvs: " + UVList.ToArray().Length);
+       // Debug.Log("vertices: " + vertexList.ToArray().Length + ", indices: " + triIndexList.ToArray().Length + ", uvs: " + UVList.ToArray().Length);
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mesh;
     }
