@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HotbarScript : MonoBehaviour
 {
+    public delegate void HotbarEvent(int selected);
+    public static event HotbarEvent OnHotbarSelectionChanged;
+
     public int currentlySelected = 0;
     public GameObject selector;
 
@@ -22,12 +25,11 @@ public class HotbarScript : MonoBehaviour
         // Move the selector according to the currently selected int
         selector.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectorInitialPosition.x + (selectorWidth * currentlySelected), selectorInitialPosition.y);
 
-
         // Keycode controls
-        if (Input.GetKeyDown(KeyCode.Alpha1)) currentlySelected = 0;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) currentlySelected = 1;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) currentlySelected = 2;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) currentlySelected = 3;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) ChangeSelection(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) ChangeSelection(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) ChangeSelection(2);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) ChangeSelection(3);
 
         float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
         if (scrollWheel < 0) SelectNext();
@@ -38,11 +40,19 @@ public class HotbarScript : MonoBehaviour
     {
         currentlySelected++;
         if (currentlySelected > 3) currentlySelected = 0;
+        OnHotbarSelectionChanged?.Invoke(currentlySelected);
     }
 
     public void SelectPrevious()
     {
         currentlySelected--;
         if (currentlySelected < 0) currentlySelected = 3;
+        OnHotbarSelectionChanged?.Invoke(currentlySelected);
+    }
+
+    public void ChangeSelection(int newSelection)
+    {
+        currentlySelected = newSelection;
+        OnHotbarSelectionChanged?.Invoke(newSelection);
     }
 }

@@ -871,6 +871,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 097ef5e816fb2b549a96449c5ae0c5da, type: 3}
   droppedBlockPickupSound: {fileID: 8300000, guid: 828d453168b74044186d55978d5a2338,
     type: 3}
+  hotbarSelectionChangedSound: {fileID: 8300000, guid: ce9e959c466b19848836756aba583830,
+    type: 3}
 --- !u!4 &584560811
 Transform:
   m_ObjectHideFlags: 0

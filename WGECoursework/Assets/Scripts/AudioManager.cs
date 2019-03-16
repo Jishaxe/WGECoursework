@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] blockRemovalSounds;
     public AudioClip[] blockPlacementSounds;
     public AudioClip droppedBlockPickupSound;
+    public AudioClip hotbarSelectionChangedSound;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class AudioManager : MonoBehaviour
         PlayerScript.OnBlockPlacement += OnBlockPlacement;
         PlayerScript.OnBlockRemoval += OnBlockRemoval;
         DroppedCubeScript.OnDroppedCubePickup += OnDroppedBlockPickup;
+        HotbarScript.OnHotbarSelectionChanged += OnHotbarSelectionChanged;
     }
 
 
@@ -37,5 +39,10 @@ public class AudioManager : MonoBehaviour
     void OnDroppedBlockPickup(Block type)
     {
         audioSource.PlayOneShot(droppedBlockPickupSound);
+    }
+
+    void OnHotbarSelectionChanged(int newSelection)
+    {
+        audioSource.PlayOneShot(hotbarSelectionChangedSound);
     }
 }
