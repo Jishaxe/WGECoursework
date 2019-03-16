@@ -15,7 +15,7 @@ public class DroppedCubeSpawner : MonoBehaviour
     void OnBlockRemoval(int type, Vector3 position)
     {
         GameObject droppedCube = Instantiate(droppedCubePrefab);
-        droppedCube.transform.position = position + new Vector3(0.5f, 0.5f, 0.5f);
+        droppedCube.transform.position = position + new Vector3(0.25f, 0.25f, 0.25f);
 
         // -1 because 0 is air but we dont have a type for that
         droppedCube.GetComponent<DroppedCubeScript>().type = (Block)type - 1;

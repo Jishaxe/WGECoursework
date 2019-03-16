@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +14,34 @@ public class HotbarScript : MonoBehaviour
     Vector2 selectorInitialPosition;
     public float selectorWidth;
 
+    public InventoryItemScript item1;
+    public InventoryItemScript item2;
+    public InventoryItemScript item3;
+    public InventoryItemScript item4;
+
     // Start is called before the first frame update
     void Start()
     {
         selectorInitialPosition = selector.GetComponent<RectTransform>().anchoredPosition;
+    }
+
+    public void UpdateInventory(List<InventoryItem> items)
+    {
+        // Clear all the items
+        item1.UpdateItem(Block.DIRT, 0);
+        item2.UpdateItem(Block.DIRT, 0);
+        item3.UpdateItem(Block.DIRT, 0);
+        item4.UpdateItem(Block.DIRT, 0);
+
+        try
+        {
+            item1.UpdateItem(items[0].type, items[0].count);
+            item2.UpdateItem(items[1].type, items[1].count);
+            item3.UpdateItem(items[2].type, items[2].count);
+            item4.UpdateItem(items[3].type, items[3].count);
+        } catch (ArgumentOutOfRangeException) { }
+
+        SendHotbarSelectionChangedEvent();
     }
 
     // Update is called once per frame
@@ -36,23 +61,46 @@ public class HotbarScript : MonoBehaviour
         if (scrollWheel > 0) SelectPrevious();
     }
 
+    void SendHotbarSelectionChangedEvent()
+    {
+        int sel = 0;
+
+        switch (currentlySelected)
+        {
+            case 0:
+                if (item1.amount > 0) sel = (int)(item1.blockType) + 1;
+                break;
+            case 1:
+                if (item2.amount > 0) sel = (int)(item2.blockType) + 1;
+                break;
+            case 2:
+                if (item3.amount > 0) sel = (int)(item3.blockType) + 1;
+                break;
+            case 3:
+               if (item4.amount > 0) sel = (int)(item4.blockType) + 1;
+               break;
+        }
+
+        OnHotbarSelectionChanged?.Invoke(sel);
+    }
+
     public void SelectNext()
     {
         currentlySelected++;
         if (currentlySelected > 3) currentlySelected = 0;
-        OnHotbarSelectionChanged?.Invoke(currentlySelected);
+        SendHotbarSelectionChangedEvent();
     }
 
     public void SelectPrevious()
     {
         currentlySelected--;
         if (currentlySelected < 0) currentlySelected = 3;
-        OnHotbarSelectionChanged?.Invoke(currentlySelected);
+        SendHotbarSelectionChangedEvent();
     }
 
     public void ChangeSelection(int newSelection)
     {
         currentlySelected = newSelection;
-        OnHotbarSelectionChanged?.Invoke(newSelection);
+        SendHotbarSelectionChangedEvent();
     }
 }

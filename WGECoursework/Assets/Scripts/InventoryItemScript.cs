@@ -32,9 +32,6 @@ public class InventoryItemScript : MonoBehaviour
             numberText.text = amount.ToString();
             image.enabled = true;
 
-
-
-
             int x, y, width, height;
 
             Vector2 uvCoords = VoxelGenerator.Block2UV(blockType);
