@@ -131,5 +131,22 @@ public class PlayerScript : MonoBehaviour
 
         chunk.BuildChunk();
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "DroppedCube")
+        {
+            DroppedCubeScript droppedCube = other.gameObject.GetComponent<DroppedCubeScript>();
+            droppedCube.FlyTowards(this.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "DroppedCube")
+        {
+            Destroy(collision.gameObject);
+        }
+    }
 }
 

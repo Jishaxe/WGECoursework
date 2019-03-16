@@ -1,24 +1,33 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DroppedCubeScript : MonoBehaviour
 {
+    public delegate void OnDroppedCubeEvent(Block type);
+    public static event OnDroppedCubeEvent OnDroppedCubePickup;
+
     public Block type;
     Mesh mesh;
 
     public float floatHeight;
     public float floatForce;
+    public float pullForce;
+    public float distanceBeforeCollecting;
 
-    BoxCollider collider;
+    BoxCollider collid;
     Rigidbody rb;
     VoxelGenerator voxelGenerator;
+
+    // If this is null the cube isn't flying towards anything
+    public GameObject flyTowardsTarget = null;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        collider = GetComponent<BoxCollider>();
+        collid = GetComponent<BoxCollider>();
         mesh = GetComponent<MeshFilter>().mesh;
         voxelGenerator = GetComponent<VoxelGenerator>();
         voxelGenerator.Initialize();
@@ -38,17 +47,40 @@ public class DroppedCubeScript : MonoBehaviour
 
     void Update()
     {
-        Ray ray = new Ray(collider.bounds.center, -this.transform.up);
+        // Spin a little bit
+        rb.transform.eulerAngles += new Vector3(0, 1, 0);
+
+        // if we have a target to fly towards, do that
+        if (flyTowardsTarget != null)
+        {
+            rb.AddForce((flyTowardsTarget.transform.position - this.transform.position) * pullForce);
+            float distance = (flyTowardsTarget.transform.position - this.transform.position).magnitude;
+            if (distance < distanceBeforeCollecting)
+            {
+                if (OnDroppedCubePickup != null) OnDroppedCubePickup(type);
+                Destroy(this.gameObject);
+            }
+        }
+
+        // otherwise just bob up and down
+        Ray ray = new Ray(collid.bounds.center, -this.transform.up);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, floatHeight, LayerMask.GetMask("Blocks"))) {
-            Debug.DrawLine(collider.bounds.center, collider.bounds.center - (this.transform.up * floatHeight));
+        if (Physics.Raycast(ray, out hit, floatHeight, LayerMask.GetMask("Blocks")))
+        {
+            Debug.DrawLine(collid.bounds.center, collid.bounds.center - (this.transform.up * floatHeight));
 
             rb.AddForce(this.transform.up * floatForce, ForceMode.Acceleration);
-            rb.transform.eulerAngles += new Vector3(0, 1, 0);
-        } else
+        }
+        else
         {
             rb.AddForce(-this.transform.up * floatForce, ForceMode.Acceleration);
         }
+    }
+
+    public void FlyTowards(GameObject gameObject)
+    {
+        flyTowardsTarget = gameObject;
+        floatHeight *= 2;
     }
 }

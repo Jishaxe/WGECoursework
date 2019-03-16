@@ -158,7 +158,7 @@ public class VoxelChunk : MonoBehaviour {
         {
             type = terrainArray[(int)blockPosition.x, (int)blockPosition.y, (int)blockPosition.z];
         }
-        catch (IndexOutOfRangeException ex) { } // Catch the exception we'll hit if it's out of range
+        catch (IndexOutOfRangeException) { } // Catch the exception we'll hit if it's out of range
 
         return new BlockData
         {

@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour
     // The positioning in this array is used to match sounds to blocks - the index of a given AudioClip is the same as a block type int
     public AudioClip[] blockRemovalSounds;
     public AudioClip[] blockPlacementSounds;
+    public AudioClip droppedBlockPickupSound;
 
     void Start()
     {
@@ -17,6 +18,7 @@ public class AudioManager : MonoBehaviour
         // Attach to the player's events
         PlayerScript.OnBlockPlacement += OnBlockPlacement;
         PlayerScript.OnBlockRemoval += OnBlockRemoval;
+        DroppedCubeScript.OnDroppedCubePickup += OnDroppedBlockPickup;
     }
 
 
@@ -30,5 +32,10 @@ public class AudioManager : MonoBehaviour
     {
         // Play the relevant placement sounds
         audioSource.PlayOneShot(blockPlacementSounds[type]);
+    }
+
+    void OnDroppedBlockPickup(Block type)
+    {
+        audioSource.PlayOneShot(droppedBlockPickupSound);
     }
 }

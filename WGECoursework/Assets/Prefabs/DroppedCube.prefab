@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 6837412780538309063}
   m_Layer: 0
   m_Name: DroppedCube
-  m_TagString: Untagged
+  m_TagString: DroppedCube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,6 +52,9 @@ MonoBehaviour:
   type: 2
   floatHeight: 1
   floatForce: 8
+  pullForce: 100
+  distanceBeforeCollecting: 1
+  flyTowardsTarget: {fileID: 0}
 --- !u!114 &6837412780538309065
 MonoBehaviour:
   m_ObjectHideFlags: 0
