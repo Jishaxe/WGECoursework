@@ -9,6 +9,9 @@ public class InventoryItem
     public Block type;
 }
 
+public enum SortInventoryBy { NAME, QUANTITY }
+public enum SortInventoryOrder { DESCENDING, ASCENDING }
+
 public class InventoryScript : MonoBehaviour
 {
     List<InventoryItem> inventory = new List<InventoryItem>();
@@ -18,8 +21,16 @@ public class InventoryScript : MonoBehaviour
     {
         DroppedCubeScript.OnDroppedCubePickup += AddBlock;
         PlayerScript.OnBlockPlacement += OnBlockPlacement;
+        HotbarScript.OnSortInventory += OnSortInventory;
 
         hotbar = GetComponent<HotbarScript>();
+    }
+    
+    void OnSortInventory(SortInventoryBy by, SortInventoryOrder order)
+    {
+        inventory = InventorySorter.Sort(inventory, by, order);
+
+        hotbar.UpdateInventory(inventory);
     }
 
     public void AddBlock(Block type)

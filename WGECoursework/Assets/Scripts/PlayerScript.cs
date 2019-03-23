@@ -42,7 +42,7 @@ public class PlayerScript : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         // unlock cursor at the start
-        fps.m_MouseLook.lockCursor = false;
+        fps.m_MouseLook.m_cursorIsLocked = false;
         blockShadow = Instantiate(blockShadowPrefab);
         blockShadow.SetActive(false);
 
@@ -58,7 +58,7 @@ public class PlayerScript : MonoBehaviour
     public void OnFinishedLoading(float progress)
     {
         // unfreeze game once loaded
-        fps.m_MouseLook.lockCursor = true;
+        fps.m_MouseLook.m_cursorIsLocked = true;
         Time.timeScale = 1;
     }
 
@@ -108,27 +108,22 @@ public class PlayerScript : MonoBehaviour
             blockShadow.SetActive(true);
             blockShadow.transform.position = currentChunk.transform.TransformPoint(blockPlacementPoint); //+ blockShadowOffset;
 
-
-            if (Input.GetMouseButtonUp(1))
+            if (fps.m_MouseLook.m_cursorIsLocked)
             {
-                Debug.Log("placing " + blockToPlace);
-                // Place a block if we have one selected
-                if (blockToPlace != 0) PlaceBlock(blockPlacementPoint, currentChunk, blockToPlace);
+                if (Input.GetMouseButtonUp(1))
+                {
+                    Debug.Log("placing " + blockToPlace);
+                    // Place a block if we have one selected
+                    if (blockToPlace != 0) PlaceBlock(blockPlacementPoint, currentChunk, blockToPlace);
+                }
+                if (Input.GetMouseButtonUp(0)) DigBlock(currentSelectedBlock, currentChunk);
             }
-            if (Input.GetMouseButtonUp(0)) DigBlock(currentSelectedBlock, currentChunk);
 
         } else
         {
             blockShadow.SetActive(false);
         }
 
-    }
-
-    private void OnGUI()
-    {
-        if (currentChunk == null) return;
-        Handles.Label(currentChunk.transform.TransformPoint(new Vector3(currentSelectedBlock.x, currentSelectedBlock.y, currentSelectedBlock.z)), currentSelectedBlock.ToString());
-        Handles.Label(currentChunk.transform.TransformPoint(blockPlacementPoint) + new Vector3(0, 0.2f, 0), blockPlacementPoint.ToString());
     }
 
     private void OnDrawGizmos()

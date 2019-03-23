@@ -21,8 +21,14 @@ public class AudioManager : MonoBehaviour
         PlayerScript.OnBlockRemoval += OnBlockRemoval;
         DroppedCubeScript.OnDroppedCubePickup += OnDroppedBlockPickup;
         HotbarScript.OnHotbarSelectionChanged += OnHotbarSelectionChanged;
+        HotbarScript.OnSortInventory += OnSortInventory;
     }
 
+
+    void OnSortInventory(SortInventoryBy by, SortInventoryOrder order)
+    {
+        audioSource.PlayOneShot(hotbarSelectionChangedSound);
+    }
 
     void OnBlockRemoval(int type, Vector3 position)
     {

@@ -2,11 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HotbarScript : MonoBehaviour
 {
     public delegate void HotbarEvent(int selected);
     public static event HotbarEvent OnHotbarSelectionChanged;
+
+    public delegate void HotbarSortingEvent(SortInventoryBy by, SortInventoryOrder order);
+    public static event HotbarSortingEvent OnSortInventory;
 
     public int currentlySelected = 0;
     public GameObject selector;
@@ -18,6 +22,20 @@ public class HotbarScript : MonoBehaviour
     public InventoryItemScript item2;
     public InventoryItemScript item3;
     public InventoryItemScript item4;
+
+    public Sprite azDescendingSpr;
+    public Sprite azAscendingSpr;
+
+    public Sprite qAscendingSpr;
+    public Sprite qDescendingSpr;
+
+    // whether the sorting options are sorting descending or not
+    bool azDescending = true;
+    bool qDescending = true;
+
+    // the sorting buttons
+    public Image azButton;
+    public Image qButton;
 
     // Start is called before the first frame update
     void Start()
@@ -102,5 +120,43 @@ public class HotbarScript : MonoBehaviour
     {
         currentlySelected = newSelection;
         SendHotbarSelectionChangedEvent();
+    }
+
+    public void SortAlphabetically()
+    {
+        SortInventoryOrder order = SortInventoryOrder.DESCENDING;
+
+        azDescending = !azDescending;
+        if (azDescending)
+        {
+            azButton.sprite = azDescendingSpr;
+            order = SortInventoryOrder.DESCENDING;
+        }
+        else if (!azDescending)
+        {
+            azButton.sprite = azAscendingSpr;
+            order = SortInventoryOrder.ASCENDING;
+        }
+
+        OnSortInventory(SortInventoryBy.NAME, order);
+    }
+
+    public void SortByQuantity()
+    {
+        SortInventoryOrder order = SortInventoryOrder.DESCENDING;
+
+        qDescending = !qDescending;
+        if (qDescending)
+        {
+            qButton.sprite = qDescendingSpr;
+            order = SortInventoryOrder.DESCENDING;
+        }
+        else if (!qDescending)
+        {
+            qButton.sprite = qAscendingSpr;
+            order = SortInventoryOrder.ASCENDING;
+        }
+
+        OnSortInventory(SortInventoryBy.QUANTITY, order);
     }
 }

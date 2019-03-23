@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Voxel.unity
+    guid: f20206317ec671245a29b9af60738252
   m_configObjects: {}
