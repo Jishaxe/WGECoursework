@@ -82,6 +82,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if(Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Tab))
             {
+                Debug.Log("unlock!");
                 m_cursorIsLocked = !m_cursorIsLocked;
             }
 
