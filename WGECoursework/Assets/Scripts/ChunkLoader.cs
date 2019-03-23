@@ -7,9 +7,9 @@ using UnityEngine;
 public class ChunkLoader : MonoBehaviour
 {
     public delegate void LoadEvent(float percentage);
-    public event LoadEvent OnStartLoading;
-    public event LoadEvent OnLoadProgress;
-    public event LoadEvent OnFinishLoading;
+    public static event LoadEvent OnStartLoading;
+    public static event LoadEvent OnLoadProgress;
+    public static event LoadEvent OnFinishLoading;
 
     List<BlockData> blocks;
     GameObject chunk;
@@ -94,8 +94,13 @@ public class ChunkLoader : MonoBehaviour
     {
     }
 
+    public void OnStartLoad(string filename)
+    {
+        StartCoroutine(LoadChunk(filename));
+    }
+
     private void Start()
     {
-        StartCoroutine(LoadChunk("AssessmentChunk2.xml"));
+        StartScreenScript.OnStartLoad += OnStartLoad;
     }
 }

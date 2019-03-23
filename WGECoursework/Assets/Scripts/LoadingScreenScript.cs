@@ -6,17 +6,15 @@ using UnityEngine.UI;
 public class LoadingScreenScript : MonoBehaviour
 {
     // Consumes events from the chunk loader to render a progress bar
-
-    ChunkLoader chunkLoader;
     public Image progressBar;
 
     private void Awake()
     {
-        chunkLoader = GameObject.Find("ChunkLoader").GetComponent<ChunkLoader>();
-        chunkLoader.OnStartLoading += StartLoading;
-        chunkLoader.OnLoadProgress += Progress;
-        chunkLoader.OnFinishLoading += Finished;
+        ChunkLoader.OnStartLoading += StartLoading;
+        ChunkLoader.OnLoadProgress += Progress;
+        ChunkLoader.OnFinishLoading += Finished;
     }
+
     void StartLoading(float progress)
     {
         gameObject.SetActive(true);

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class PlayerScript : MonoBehaviour
 {
     // The block "shadow" outline
     public GameObject blockShadowPrefab;
-
 
     // Player inventory
     public InventoryScript inventory;
@@ -27,6 +27,8 @@ public class PlayerScript : MonoBehaviour
 
     VoxelChunk currentChunk;
 
+    FirstPersonController fps;
+    Rigidbody rb;
 
     public delegate void BlockPlacementEvent(int blockType, Vector3 location);
     public static event BlockPlacementEvent OnBlockPlacement;
@@ -35,9 +37,29 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        fps = GetComponent<FirstPersonController>();
+        rb = GetComponent<Rigidbody>();
+
+        // unlock cursor at the start
+        fps.m_MouseLook.lockCursor = false;
         blockShadow = Instantiate(blockShadowPrefab);
         blockShadow.SetActive(false);
+
+
+        // freeze game at start
+        Time.timeScale = 0;
+
+        ChunkLoader.OnFinishLoading += OnFinishedLoading;
+
         HotbarScript.OnHotbarSelectionChanged += OnHotbarSelectionChange;
+    }
+
+    public void OnFinishedLoading(float progress)
+    {
+        // unfreeze game once loaded
+        fps.m_MouseLook.lockCursor = true;
+        Time.timeScale = 1;
     }
 
     public void OnHotbarSelectionChange(int selected)
