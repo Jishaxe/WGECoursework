@@ -37,6 +37,12 @@ public class HotbarScript : MonoBehaviour
     public Image azButton;
     public Image qButton;
 
+    public SearchbarScript searchbar;
+
+    private void Awake()
+    {
+        searchbar.OnSearch += OnSearch;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -120,6 +126,42 @@ public class HotbarScript : MonoBehaviour
     {
         currentlySelected = newSelection;
         SendHotbarSelectionChangedEvent();
+    }
+
+    public void SearchButtonPressed()
+    {
+        searchbar.Toggle();
+
+        if (searchbar.showing)
+        {
+            item1.Hide();
+            item2.Hide();
+            item3.Hide();
+            item4.Hide();
+        } else
+        {
+            item1.Show();
+            item2.Show();
+            item3.Show();
+            item4.Show();
+        }
+    }
+
+    public void OnSearch(string text)
+    {
+        item1.Hide();
+        item2.Hide();
+        item3.Hide();
+        item4.Hide();
+
+        foreach (InventoryItemScript item in new InventoryItemScript[]{ item1, item2, item3, item4}) {
+            if (item.amount > 0 && item.blockType.ToString().ToLower().Contains(text.ToLower()))
+            {
+                Debug.Log("Apparently, " + item.blockType.ToString() + " contains " + text);
+                item.Show();
+            }
+
+        }
     }
 
     public void SortAlphabetically()

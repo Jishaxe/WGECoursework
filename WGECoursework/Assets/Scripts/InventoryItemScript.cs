@@ -11,10 +11,21 @@ public class InventoryItemScript : MonoBehaviour
 
     public Block blockType;
     public int amount = 0;
+    public GameObject hider;
 
     public void Start()
     {
         UpdateItem(Block.DIRT, 0);
+    }
+
+    public void Hide()
+    {
+        hider.SetActive(true);
+    }
+
+    public void Show()
+    {
+        hider.SetActive(false);
     }
 
     public void UpdateItem(Block blockType, int amount)
