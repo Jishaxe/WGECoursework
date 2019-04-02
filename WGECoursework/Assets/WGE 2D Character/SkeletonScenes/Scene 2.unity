@@ -452,7 +452,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1146587345}
+  offset: {x: 0, y: 0, z: 0}
+  player: {fileID: 987648366}
   tightness: 0.25
+  shakeAmount: 0.5
 --- !u!1 &732672746
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +976,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &987648366 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1385956852}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80c3feda386b56e4ba5c9c40341f3f48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &987648372 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a,
@@ -1211,7 +1226,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146587344}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.42, y: 0, z: 0}
+  m_LocalPosition: {x: 5.75, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 987648372}

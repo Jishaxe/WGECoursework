@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController2D))]
 
 public class PlayerMovement2D : MonoBehaviour {
+    public delegate void PlayerEvent();
+    public  PlayerEvent OnPlayerLand;
 
     //member variables
     PlayerController2D _pController;
@@ -60,6 +62,9 @@ public class PlayerMovement2D : MonoBehaviour {
         {
             if (Physics2D.OverlapBoxAll(new Vector2(_feet.position.x, _feet.position.y), new Vector2(0.25f, 0.25f), 0f).Length > 1 && _mState != MovementState.DASHING)
             {
+                // if the state is IN_AIR and we're currently moving downwards, send OnPlayerLand event
+                if (_mState == MovementState.IN_AIR && _rBody.velocity.y < 0) OnPlayerLand();
+
                 SwitchState(MovementState.ON_GROUND);
             }
             else
