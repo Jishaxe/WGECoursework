@@ -454,7 +454,8 @@ MonoBehaviour:
   target: {fileID: 1146587345}
   offset: {x: 0, y: 0, z: 0}
   player: {fileID: 987648366}
-  tightness: 0.25
+  xtightness: 0.25
+  ytightness: 0.25
   shakeAmount: 0.5
 --- !u!1 &732672746
 GameObject:
@@ -1343,6 +1344,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _jumpNegGravity
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _JumpImpulse
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _airAcceleration
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _dashReloadTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _dashImpulse
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _dashTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _cameraTarget
+      value: 
+      objectReference: {fileID: 1146587344}
+    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
+        type: 3}
+      propertyPath: _cameraPushMultiplier
+      value: 3.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12
@@ -1374,36 +1415,6 @@ PrefabInstance:
     - target: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a, type: 3}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _jumpNegGravity
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _JumpImpulse
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _airAcceleration
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _dashReloadTime
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _dashImpulse
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 114299321614154198, guid: af013052b86cd6d42a2ea33b8533664a,
-        type: 3}
-      propertyPath: _dashTime
-      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 50831842124396082, guid: af013052b86cd6d42a2ea33b8533664a,
         type: 3}

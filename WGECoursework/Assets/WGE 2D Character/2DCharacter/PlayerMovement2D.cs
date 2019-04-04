@@ -12,7 +12,9 @@ public class PlayerMovement2D : MonoBehaviour {
     PlayerController2D _pController;
     Rigidbody2D _rBody;
     public Transform _feet;
-
+    public GameObject _cameraTarget;
+    Vector3 _cameraTargetInitialPosition;
+    public float _cameraPushMultiplier = 1f;
     public MovementState _mState = MovementState.ON_GROUND;
 
     public float _speed = 10f;
@@ -31,7 +33,7 @@ public class PlayerMovement2D : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _pController = GetComponent<PlayerController2D>();
-
+        _cameraTargetInitialPosition = _cameraTarget.transform.localPosition;
         _pController._jumpInput += Jump;
         _pController._hMoveInput += Move;
         _pController._jumpReleaseInput += JumpEnd;
@@ -112,6 +114,9 @@ public class PlayerMovement2D : MonoBehaviour {
 
     void Move(float x)
     {
+        // push the camera target a little bit with our movement
+        _cameraTarget.transform.localPosition = new Vector3(_cameraTargetInitialPosition.x + x * _cameraPushMultiplier, _cameraTargetInitialPosition.y, _cameraTargetInitialPosition.z);
+
         switch (_mState)
         {
             case MovementState.ON_GROUND:

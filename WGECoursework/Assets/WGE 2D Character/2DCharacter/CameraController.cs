@@ -8,7 +8,8 @@ public class CameraController : MonoBehaviour
     public Vector3 offset;
     public PlayerMovement2D player;
     float initialZ;
-    public float tightness = 0.25f;
+    public float xtightness = 0.25f;
+    public float ytightness = 0.25f;
     public float shakeAmount = 0.25f;
 
     private void Awake()
@@ -39,11 +40,18 @@ public class CameraController : MonoBehaviour
         initialZ = this.transform.position.z;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (target == null) return;
-        Vector3 lerped = Vector3.Lerp(this.transform.position, target.transform.position, tightness);
-        lerped.z = initialZ;
-        this.transform.position = lerped + offset;
+
+        // work out change in position between the last fixedupdate
+        Vector3 delta = target.position - this.transform.position;
+        delta.z = 0; // don't change the z
+
+        // smooth out the movement on both sides
+        delta.x *= xtightness;
+        delta.y *= ytightness;
+
+        this.transform.position += delta;// + offset;
     }
 }
