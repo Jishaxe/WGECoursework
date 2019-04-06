@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class ConversationNode
 {
+    public string ID;
     public Rect rect;
     public string title;
     public bool isDragged;
@@ -19,15 +20,25 @@ public class ConversationNode
     public GUIStyle defaultNodeStyle;
     public GUIStyle selectedNodeStyle;
 
+    public GUIStyle inPointStyle;
+    public GUIStyle outPointStyle;
+
     public Action<ConversationNode> OnRemoveNode;
 
-    public ConversationNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode)
+    public ConversationNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle)
     {
         rect = new Rect(position.x, position.y, width, height);
         currentStyle = defaultNodeStyle = nodeStyle;
         this.selectedNodeStyle = selectedNodeStyle;
+        this.inPointStyle = inPointStyle;
+        this.outPointStyle = outPointStyle;
+        ID = GUID.Generate().ToString();
+    }
 
+    public void Initialize(Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode)
+    {
         // make the left in point and right out point with the given styles and callbacks
+        Debug.Log(inPointStyle);
         inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
         outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickOutPoint);
 

@@ -10,6 +10,9 @@ public class Connection
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
+    public string connectedIn;
+    public string connectedOut;
+
     // callback when the connection itself is clicked
     public Action<Connection> OnClickRemoveConnection;
 
@@ -18,6 +21,9 @@ public class Connection
         this.inPoint = inPoint;
         this.outPoint = outPoint;
         this.OnClickRemoveConnection = OnClickRemoveConnection;
+
+        connectedIn = inPoint.node.ID;
+        connectedOut = outPoint.node.ID;
     }
 
     public void Draw()

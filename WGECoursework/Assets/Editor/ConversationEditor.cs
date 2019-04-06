@@ -8,11 +8,6 @@ using UnityEngine;
 // A lot of the work done here is from the tutorial http://gram.gs/gramlog/creating-node-based-editor-unity/ for the node-based stuff
 public class ConversationEditor : EditorWindow
 {
-    GUIStyle nodeStyle;
-    GUIStyle selectedNodeStyle;
-    GUIStyle inPointStyle;
-    GUIStyle outPointStyle;
-
     ConnectionPoint selectedInPoint;
     ConnectionPoint selectedOutPoint;
 
@@ -48,26 +43,7 @@ public class ConversationEditor : EditorWindow
 
     private void OnEnable()
     {
-        nodeStyle = new GUIStyle();
-        // use animator node 
-        nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
-        nodeStyle.border = new RectOffset(12, 12, 12, 12);
 
-        // two distinct styles for each connection type
-        inPointStyle = new GUIStyle();
-        inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
-        inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
-        inPointStyle.border = new RectOffset(4, 4, 12, 12);
-
-        selectedNodeStyle = new GUIStyle();
-        selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-        selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
-
-
-        outPointStyle = new GUIStyle();
-        outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
-        outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
-        outPointStyle.border = new RectOffset(4, 4, 12, 12);
     }
 
     public void DrawNodes()
@@ -201,7 +177,10 @@ public class ConversationEditor : EditorWindow
 
     void OnAddNode(Vector2 mousePosition)
     {
-        conversation.nodes.Add(new ConversationNode(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        ConversationNode node = new ConversationNode(mousePosition, 200, 50, conversation.nodeStyle, conversation.selectedNodeStyle, conversation.inPointStyle, conversation.outPointStyle);
+
+        node.Initialize(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+        conversation.nodes.Add(node);
         Save();
     }
 
@@ -214,20 +193,49 @@ public class ConversationEditor : EditorWindow
 
     public void Load()
     {
+        conversation.nodeStyle = new GUIStyle();
+        // use animator node 
+        conversation.nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        conversation.nodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+        // two distinct styles for each connection type
+        conversation.inPointStyle = new GUIStyle();
+        conversation.inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
+        conversation.inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
+        conversation.inPointStyle.border = new RectOffset(4, 4, 12, 12);
+
+        conversation.selectedNodeStyle = new GUIStyle();
+        conversation.selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        conversation.selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
+
+
+        conversation.outPointStyle = new GUIStyle();
+        conversation.outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
+        conversation.outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
+        conversation.outPointStyle.border = new RectOffset(4, 4, 12, 12);
+
         this.conversationFilename = AssetDatabase.GetAssetPath(conversation.GetInstanceID());
         Debug.Log("Loaded conversation with " + conversation.nodes.Count + " nodes and " + conversation.connections.Count + " connections");
         // reassign events
-        foreach (ConversationNode node in conversation.nodes)
-        {
-            node.OnRemoveNode = OnClickRemoveNode;
-            node.inPoint.OnClickConnectionPoint = OnClickInPoint;
-            node.outPoint.OnClickConnectionPoint = OnClickOutPoint;
-        }
+        foreach (ConversationNode node in conversation.nodes) node.Initialize(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
 
+        // Find each connection nodes and reconnect
         foreach (Connection connection in conversation.connections)
         {
             connection.OnClickRemoveConnection = OnClickRemoveConnection;
+            connection.inPoint = GetNodeByID(connection.connectedIn).inPoint;
+            connection.outPoint = GetNodeByID(connection.connectedOut).outPoint;
         }
+    }
+
+    public ConversationNode GetNodeByID(string ID)
+    {
+        foreach (ConversationNode node in conversation.nodes)
+        {
+            if (node.ID == ID) return node;
+        }
+
+        return null;
     }
 
     void OnClickRemoveNode(ConversationNode node)
@@ -246,6 +254,8 @@ public class ConversationEditor : EditorWindow
         }
 
         conversation.nodes.Remove(node);
+
+        GUI.changed = true;
         Save();
     }
 
