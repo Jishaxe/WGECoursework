@@ -5,6 +5,7 @@ using UnityEngine;
 
 public enum ConnectionPointType { In, Out }
 
+[Serializable]
 // represents the connection point button
 public class ConnectionPoint
 {

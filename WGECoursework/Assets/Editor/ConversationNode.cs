@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
+[Serializable]
 public class ConversationNode
 {
     public Rect rect;
     public string title;
     public bool isDragged;
-    public GUIStyle style;
+    public bool isSelected;
+    public GUIStyle currentStyle;
 
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
-    public ConversationNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint)
+    public GUIStyle defaultNodeStyle;
+    public GUIStyle selectedNodeStyle;
+
+    public Action<ConversationNode> OnRemoveNode;
+
+    public ConversationNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode)
     {
         rect = new Rect(position.x, position.y, width, height);
-        style = nodeStyle;
+        currentStyle = defaultNodeStyle = nodeStyle;
+        this.selectedNodeStyle = selectedNodeStyle;
 
         // make the left in point and right out point with the given styles and callbacks
         inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
         outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickOutPoint);
+
+        this.OnRemoveNode = OnRemoveNode;
     }
 
     public void Drag(Vector2 delta)
@@ -32,13 +43,30 @@ public class ConversationNode
     {
         inPoint.Draw();
         outPoint.Draw();
-        GUI.Box(rect, title, style);
+        GUI.Box(rect, title, currentStyle);
+    }
+
+    private void ShowContextMenu()
+    {
+        GenericMenu menu = new GenericMenu();
+        menu.AddItem(new GUIContent("Remove node"), false, OnClickRemoveNode);
+        menu.ShowAsContext();
+    }
+
+    private void OnClickRemoveNode()
+    {
+        OnRemoveNode?.Invoke(this);
     }
 
     public bool ProcessEvents(Event e)
     {
         switch (e.type)
         {
+
+            case EventType.KeyDown:
+                if ((e.keyCode == KeyCode.Delete || e.keyCode == KeyCode.Backspace) && isSelected) OnClickRemoveNode();
+                break;
+
             case EventType.MouseDown:
                 if (e.button == 0)
                 {
@@ -47,10 +75,22 @@ public class ConversationNode
                     {
                         isDragged = true;
                         GUI.changed = true;
+                        isSelected = true;
+                        currentStyle = selectedNodeStyle;
+                    } else
+                    {
+                        isSelected = false;
+                        currentStyle = defaultNodeStyle;
                     }
 
                     GUI.changed = true;
 
+                }
+
+                if (e.button == 1 && rect.Contains(e.mousePosition))
+                {
+                    ShowContextMenu();
+                    e.Use();
                 }
 
                 break;
@@ -65,6 +105,7 @@ public class ConversationNode
                     return true;
                 }
                 break;
+
         }
                 
         
