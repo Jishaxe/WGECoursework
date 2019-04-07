@@ -15,6 +15,7 @@ public class ConnectionPoint
 
     // callback to call when connectionpoint is clicked
     public Action<ConnectionPoint> OnClickConnectionPoint;
+    public PlayerSpeechOption playerOption;
 
     public ConnectionPoint(ConversationNode node, ConnectionPointType type, GUIStyle style, Action<ConnectionPoint> OnClickConnectionPoint)
     {
@@ -25,21 +26,21 @@ public class ConnectionPoint
         rect = new Rect(0, 0, 10f, 20f);
     }
 
-    public void Draw()
+    // yis ignored if this is not a ConnectionPointType.OUT
+    public void Draw(float y)
     {
-        // center of the height of the node
-        rect.y = node.rect.y + (node.rect.height * 0.5f) - rect.height * 0.5f;
-
         switch (type)
         {
             // draw on left side
             case ConnectionPointType.In:
                 rect.x = node.rect.x - rect.width + 8f;
+                rect.y = node.rect.y + (node.rect.height * 0.5f) - rect.height * 0.5f;
                 break;
             
             // draw on right side
             case ConnectionPointType.Out:
                 rect.x = node.rect.x + node.rect.width - 8f;
+                rect.y = y;
                 break;
         }
 

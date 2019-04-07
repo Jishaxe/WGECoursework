@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<Conversation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name />
+  <hideFlags>None</hideFlags>
+  <NPCSpeeches>
+    <NPCSpeech ID="f359e40f74c1e8e48b6ac8c616a7d81d" x="115" y="259">
+      <NPCSays>Hey, how's it going?</NPCSays>
+      <Options>
+        <OptionID>c2876c7a8bc52b44c954378374516460</OptionID>
+        <OptionID>e555e90582ef1814091ae61fc4be46e9</OptionID>
+        <OptionID>f7c7016f5e3eaae439cceae83b542413</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="a1502b4ad385d174c8cf5ea90c5e3b51" x="414" y="166">
+      <NPCSays>That's good to hear.</NPCSays>
+      <Options>
+        <OptionID>226139e2a6c9b4e4286fa323f9b2650e</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="850575bb61839114a8f7957bf0eb1fca" x="413" y="513">
+      <NPCSays>Aww, that's a shame.</NPCSays>
+      <Options>
+        <OptionID>bc800ba31eef0134782ca0a93b0485ee</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="fc555dc8b6dfda846bd0644637a16dec" x="417" y="873">
+      <NPCSays>No need to brag about it.</NPCSays>
+      <Options>
+        <OptionID>c8c744f22986e0c4397bbc2e5215a8b1</OptionID>
+        <OptionID>857aaeb967ac756448fc8bf100ae943a</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="6e4ce0259107bbc46aa104d69b114470" x="720" y="638">
+      <NPCSays>Sorry I'm not in a great mood today.</NPCSays>
+      <Options>
+        <OptionID>7e14ad086d48c694e84e1ae8e53478fd</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="04ac7b3c983cc774499e7abaee2f6ee3" x="247" y="133">
+      <NPCSays>Hi there!	</NPCSays>
+      <Options>
+        <OptionID>6c9ae404c662ad640b1c126c8666c51d</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="3e00219b588b78b43a37d45daf5f87dc" x="513" y="113">
+      <NPCSays>I'm good thanks! How are you?</NPCSays>
+      <Options>
+        <OptionID>aa78495066003c54f8ee98ca7c932db5</OptionID>
+        <OptionID>2d4f2e0c0979de442baff6d7f7f102fc</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="5713c5ae530fd034eb71d424437a219b" x="787" y="84">
+      <NPCSays>I'm sorry to hear!</NPCSays>
+      <Options>
+        <OptionID>d7cf1911050ee7b4d9e0960c979300f2</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="73404860be1d6214bb3bccdc74f2f2e6" x="785" y="477">
+      <NPCSays>Brilliant!</NPCSays>
+      <Options>
+        <OptionID>425b7843778f5654a932f3294891a7aa</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="cbef92bc6b023a04093417b5fc356c85" x="1114" y="358">
+      <NPCSays>Bye now.</NPCSays>
+      <Options />
+    </NPCSpeech>
+  </NPCSpeeches>
+  <PlayerOptions>
+    <PlayerSpeechOption ID="c2876c7a8bc52b44c954378374516460">
+      <Result>a1502b4ad385d174c8cf5ea90c5e3b51</Result>
+      <PlayerSays>I'm doing okay.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="e555e90582ef1814091ae61fc4be46e9">
+      <Result>850575bb61839114a8f7957bf0eb1fca</Result>
+      <PlayerSays>I'm doing terribly.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="f7c7016f5e3eaae439cceae83b542413">
+      <Result>fc555dc8b6dfda846bd0644637a16dec</Result>
+      <PlayerSays>I'm doing Great!</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="c8c744f22986e0c4397bbc2e5215a8b1">
+      <Result>6e4ce0259107bbc46aa104d69b114470</Result>
+      <PlayerSays>Then why did you ask?</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="226139e2a6c9b4e4286fa323f9b2650e">
+      <Result />
+      <PlayerSays>Bye.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="bc800ba31eef0134782ca0a93b0485ee">
+      <Result />
+      <PlayerSays>Bye.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="857aaeb967ac756448fc8bf100ae943a">
+      <Result />
+      <PlayerSays>Bye.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="7e14ad086d48c694e84e1ae8e53478fd">
+      <Result />
+      <PlayerSays>Bye</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="6c9ae404c662ad640b1c126c8666c51d">
+      <Result>3e00219b588b78b43a37d45daf5f87dc</Result>
+      <PlayerSays>Hey, how are you?</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="aa78495066003c54f8ee98ca7c932db5">
+      <Result>5713c5ae530fd034eb71d424437a219b</Result>
+      <PlayerSays>Not great.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="2d4f2e0c0979de442baff6d7f7f102fc">
+      <Result>73404860be1d6214bb3bccdc74f2f2e6</Result>
+      <PlayerSays>Fantastic!</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="d7cf1911050ee7b4d9e0960c979300f2">
+      <Result>cbef92bc6b023a04093417b5fc356c85</Result>
+      <PlayerSays>Okay!</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="425b7843778f5654a932f3294891a7aa">
+      <Result>cbef92bc6b023a04093417b5fc356c85</Result>
+      <PlayerSays>Thanks!</PlayerSays>
+    </PlayerSpeechOption>
+  </PlayerOptions>
+</Conversation>

@@ -8,6 +8,15 @@ using UnityEngine;
 // A lot of the work done here is from the tutorial http://gram.gs/gramlog/creating-node-based-editor-unity/ for the node-based stuff
 public class ConversationEditor : EditorWindow
 {
+    public GUIStyle nodeStyle;
+    public GUIStyle selectedNodeStyle;
+    public GUIStyle inPointStyle;
+    public GUIStyle outPointStyle;
+    public GUIStyle textStyle;
+
+    public List<ConversationNode> nodes = new List<ConversationNode>();
+    public List<Connection> connections = new List<Connection>();
+
     ConnectionPoint selectedInPoint;
     ConnectionPoint selectedOutPoint;
 
@@ -15,8 +24,22 @@ public class ConversationEditor : EditorWindow
     private Vector2 offset;
     private Vector2 drag;
 
+    // loaded conversation
     public Conversation conversation;
+
     string conversationFilename;
+
+    bool dirty = false;
+
+    List<Connection> connectionsToRemove = new List<Connection>();
+
+    [MenuItem("Conversation Editor/New conversation")]
+    public static void OpenNewConversation()
+    {
+        Conversation cons = new Conversation();
+        cons.fileName = "Untitled";
+        ShowWindow(cons);
+    }
 
     public static void ShowWindow(Conversation conversation)
     {
@@ -24,22 +47,38 @@ public class ConversationEditor : EditorWindow
         ConversationEditor window = (ConversationEditor)GetWindow(typeof(ConversationEditor));
         window.titleContent = new GUIContent("Conversation Editor");
         window.conversation = conversation;
-        window.Load();
+        window.LoadNodesFromConversation();
         window.Show();
     }
 
     [UnityEditor.Callbacks.OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        if (Selection.activeObject as Conversation != null)
+        if (Selection.activeObject as TextAsset != null)
         {
-            ShowWindow((Conversation)Selection.activeObject);
+            ShowWindow(Conversation.LoadFromXML((TextAsset)Selection.activeObject));
             return true; //catch open file
         }
 
         return false; // let unity open the file
     }
 
+    public void RemovePendingConnections()
+    {
+        foreach (Connection connection in connectionsToRemove)
+        {
+            connection.outPoint.playerOption.result = null;
+            connection.outPoint.playerOption.resultID = null;
+            connections.Remove(connection);
+        }
+
+        if (connectionsToRemove.Count > 0)
+        {
+            GUI.changed = true;
+            dirty = true;
+            connectionsToRemove.Clear();
+        }
+    }
 
     private void OnEnable()
     {
@@ -48,12 +87,12 @@ public class ConversationEditor : EditorWindow
 
     public void DrawNodes()
     {
-        foreach (ConversationNode node in conversation.nodes) node.Draw();
+        foreach (ConversationNode node in nodes) node.Draw();
     }
 
     public void DrawConnections()
     {
-        foreach (Connection connection in conversation.connections) connection.Draw();
+        foreach (Connection connection in connections) connection.Draw();
     }
 
     private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
@@ -81,6 +120,10 @@ public class ConversationEditor : EditorWindow
         Handles.EndGUI();
     }
 
+    void OnDirty()
+    {
+        dirty = true;
+    }
 
     void OnGUI()
     {
@@ -95,6 +138,8 @@ public class ConversationEditor : EditorWindow
 
         ProcessNodeEvents(Event.current);
         ProcessEvents(Event.current);
+
+        RemovePendingConnections();
         if (GUI.changed) Repaint();
     }
     
@@ -109,19 +154,14 @@ public class ConversationEditor : EditorWindow
 
         GUILayout.FlexibleSpace();
 
-        GUILayout.Label(conversationFilename);
+        // draw the filename and a star if it's dirty
+        GUILayout.Label(conversation.fileName + ((dirty) ? "*":""));
 
-        if (GUILayout.Button("Save", EditorStyles.toolbarButton)) ForceSave();
+        if (GUILayout.Button("Save", EditorStyles.toolbarButton)) Save();
 
         GUILayout.EndHorizontal();
     }
 
-    void ForceSave()
-    {
-        EditorUtility.SetDirty(conversation); // user has to save project as well
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-    }
 
     private void DrawConnectionLine(Event e)
     {
@@ -161,9 +201,9 @@ public class ConversationEditor : EditorWindow
     void ProcessNodeEvents(Event e)
     {
         // process node events backwards because the last node is the topmost node and should get events first
-        for (int i = conversation.nodes.Count - 1; i >= 0; i--)
+        for (int i = nodes.Count - 1; i >= 0; i--)
         {
-            bool guiChanged = conversation.nodes[i].ProcessEvents(e);
+            bool guiChanged = nodes[i].ProcessEvents(e);
             if (guiChanged) GUI.changed = true;
         }
     }
@@ -177,86 +217,122 @@ public class ConversationEditor : EditorWindow
 
     void OnAddNode(Vector2 mousePosition)
     {
-        ConversationNode node = new ConversationNode(mousePosition, 200, 50, conversation.nodeStyle, conversation.selectedNodeStyle, conversation.inPointStyle, conversation.outPointStyle);
+        NPCSpeech npcSpeech = conversation.CreateNPCSpeech(mousePosition);
 
-        node.Initialize(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
-        conversation.nodes.Add(node);
-        Save();
+        ConversationNode node = new ConversationNode(npcSpeech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty);
+        nodes.Add(node);
+        dirty = true;
     }
 
     void Save()
     {
-        EditorUtility.SetDirty(conversation); // user has to save project as well
-        //AssetDatabase.SaveAssets();
-        //AssetDatabase.Refresh();
+        // pick a filename
+        if (conversation.fileName == "Untitled")
+        {
+            string path = EditorUtility.SaveFilePanel("Save Conversation as XML", "", "New conversation", ".xml");
+            if (path.Length == 0) return;
+
+            conversation.fileName = path;
+        }
+
+        conversation.SaveToXML(conversation.fileName);
+        dirty = false;
     }
 
-    public void Load()
+    // disconnect any connections related to this outpoint
+    public void OnRemoveConnectionPoint(ConnectionPoint outPoint)
     {
-        conversation.nodeStyle = new GUIStyle();
+        foreach (Connection connection in connections)
+        {
+            if (connection.outPoint == outPoint) connectionsToRemove.Add(connection);
+        }
+
+        dirty = true;
+    }
+
+    // load nodes from the Conversation object
+    public void LoadNodesFromConversation()
+    {
+        if (conversation == null)
+        {
+            conversation = new Conversation();
+            conversation.fileName = "Untitled";
+        }
+
+        nodeStyle = new GUIStyle();
         // use animator node 
-        conversation.nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
-        conversation.nodeStyle.border = new RectOffset(12, 12, 12, 12);
+        nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        nodeStyle.border = new RectOffset(12, 12, 12, 12);
 
         // two distinct styles for each connection type
-        conversation.inPointStyle = new GUIStyle();
-        conversation.inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
-        conversation.inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
-        conversation.inPointStyle.border = new RectOffset(4, 4, 12, 12);
+        inPointStyle = new GUIStyle();
+        inPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
+        inPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
+        inPointStyle.border = new RectOffset(4, 4, 12, 12);
 
-        conversation.selectedNodeStyle = new GUIStyle();
-        conversation.selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
-        conversation.selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
+        selectedNodeStyle = new GUIStyle();
+        selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
 
-        conversation.outPointStyle = new GUIStyle();
-        conversation.outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
-        conversation.outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
-        conversation.outPointStyle.border = new RectOffset(4, 4, 12, 12);
+        outPointStyle = new GUIStyle();
+        outPointStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
+        outPointStyle.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
+        outPointStyle.border = new RectOffset(4, 4, 12, 12);
 
-        this.conversationFilename = AssetDatabase.GetAssetPath(conversation.GetInstanceID());
-        Debug.Log("Loaded conversation with " + conversation.nodes.Count + " nodes and " + conversation.connections.Count + " connections");
-        // reassign events
-        foreach (ConversationNode node in conversation.nodes) node.Initialize(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+        textStyle = new GUIStyle();
+        textStyle.normal.textColor = Color.white;
 
-        // Find each connection nodes and reconnect
-        foreach (Connection connection in conversation.connections)
+        // Create nodes from NPCSpeeches
+        foreach (NPCSpeech speech in conversation.npcSpeeches)
         {
-            connection.OnClickRemoveConnection = OnClickRemoveConnection;
-            connection.inPoint = GetNodeByID(connection.connectedIn).inPoint;
-            connection.outPoint = GetNodeByID(connection.connectedOut).outPoint;
+            ConversationNode node = new ConversationNode(speech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty);
+            nodes.Add(node);
+        }
+
+
+        // connect option results to nodes
+        foreach (ConversationNode node in nodes)
+        {
+            if (node.outPoints != null)
+            {
+                foreach (ConnectionPoint outPoint in node.outPoints)
+                {
+                    if (outPoint.playerOption.result != null)
+                    {
+                        connections.Add(new Connection(GetNodeFromNPCSpeech(outPoint.playerOption.result).inPoint, outPoint, OnClickRemoveConnection));
+                    }
+                }
+            }
         }
     }
 
-    public ConversationNode GetNodeByID(string ID)
+    public ConversationNode GetNodeFromNPCSpeech(NPCSpeech speech)
     {
-        foreach (ConversationNode node in conversation.nodes)
-        {
-            if (node.ID == ID) return node;
-        }
+        foreach (ConversationNode node in nodes) if (node.npcSpeech == speech) return node;
 
         return null;
     }
 
     void OnClickRemoveNode(ConversationNode node)
     {
-        // remove all conversation.connections to this node first
-        List<Connection> connectionsToRemove = new List<Connection>();
-
-        foreach (Connection connection in conversation.connections)
+        foreach (Connection connection in connections)
         {
-            if (connection.inPoint == node.inPoint || connection.outPoint == node.outPoint) connectionsToRemove.Add(connection);
+            if (connection.inPoint == node.inPoint) connectionsToRemove.Add(connection);
+            else
+            {
+                foreach (ConnectionPoint outPoint in node.outPoints)
+                {
+                    if (connection.outPoint == outPoint) connectionsToRemove.Add(connection);
+                }
+            }
         }
 
-        foreach (Connection connection in connectionsToRemove)
-        {
-            conversation.connections.Remove(connection);
-        }
+        conversation.RemoveNPCSpeech(node.npcSpeech);
+        nodes.Remove(node);
 
-        conversation.nodes.Remove(node);
-
+        dirty = true;
         GUI.changed = true;
-        Save();
     }
 
     void OnClickInPoint(ConnectionPoint inPoint)
@@ -300,14 +376,16 @@ public class ConversationEditor : EditorWindow
 
     void OnClickRemoveConnection(Connection connection)
     {
-        conversation.connections.Remove(connection);
+        connectionsToRemove.Add(connection);
     }
 
     // connect the two selected points
     void CreateConnection()
     {
-        conversation.connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
-        Save();
+        connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+        selectedOutPoint.playerOption.result = selectedInPoint.node.npcSpeech;
+        selectedOutPoint.playerOption.resultID = selectedInPoint.node.npcSpeech.ID;
+        dirty = true;
     }
 
     void ClearConnectionSelection()
@@ -335,9 +413,8 @@ public class ConversationEditor : EditorWindow
     private void OnDrag(Vector2 delta)
     {
         drag = delta;
-        foreach (ConversationNode node in conversation.nodes) node.Drag(delta);
+        foreach (ConversationNode node in nodes) node.Drag(delta, false);
 
-        Save();
         GUI.changed = true;
     }
 }
