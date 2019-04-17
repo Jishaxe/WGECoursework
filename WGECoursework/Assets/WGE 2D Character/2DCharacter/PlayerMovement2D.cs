@@ -136,9 +136,14 @@ public class PlayerMovement2D : MonoBehaviour {
     void Move(float x)
     {
         // push the camera target a little bit with our movement (if the player isn't in conversation
-        if (_isInConversation) x = 0;
-
-        _cameraTarget.transform.localPosition = new Vector3(_cameraTargetInitialPosition.x + x * _cameraPushMultiplier, _cameraTargetInitialPosition.y, _cameraTargetInitialPosition.z);
+        if (_isInConversation)
+        {
+            _cameraTarget.transform.localPosition = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            _cameraTarget.transform.localPosition = new Vector3(_cameraTargetInitialPosition.x + x * _cameraPushMultiplier, _cameraTargetInitialPosition.y, _cameraTargetInitialPosition.z);
+        }
 
         switch (_mState)
         {

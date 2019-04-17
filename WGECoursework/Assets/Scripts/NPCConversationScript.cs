@@ -50,6 +50,30 @@ public class NPCConversationScript : MonoBehaviour
 
         // show the UI
         _ui.Activate();
+
+        _ui.NPCSays("HELLO THERE HOW ARE YOU DOING MY SON", OnPlayerContinue);
+    }
+
+    public void OnPlayerContinue()
+    {
+        PlayerSpeechOption option1 = new PlayerSpeechOption
+        {
+            playerSays = "Option 1"
+        };
+
+        PlayerSpeechOption option2 = new PlayerSpeechOption
+        {
+            playerSays = "Option 2"
+        };
+
+        PlayerSpeechOption option3 = new PlayerSpeechOption
+        {
+            playerSays = "Option 3"
+        };
+
+
+        _ui.PlayerOptions(new PlayerSpeechOption[] { option1, option2, option3 }, null);
+        SwitchFocusToPlayer();
     }
 
     public void SwitchFocusToPlayer()
