@@ -13,6 +13,8 @@ public class NPCConversationScript : MonoBehaviour
     // how to zoom the camera when in conversation
     public float zoomLevel;
 
+    // the NPC conversation UI
+    private NPCConversationUI _ui;
     private bool _isInConversation = false;
     private PlayerMovement2D _targetPlayer;
     private CameraController _targetCamera;
@@ -34,13 +36,20 @@ public class NPCConversationScript : MonoBehaviour
         player.StartConversationWith(this);
         attentionBubbleAnimator.Play("hide");
 
-        _isInConversation = false;
+        _isInConversation = true;
         _targetPlayer = player;
         _targetCamera = Camera.main.GetComponent<CameraController>();
+        
+        // save the previous zoom level so we can restore it after
         _prevZoomLevel = _targetCamera.zoomLevel;
+
+        // zoom in on interaction
         _targetCamera.zoomLevel = zoomLevel;
 
         SwitchFocusToNPC();
+
+        // show the UI
+        _ui.Activate();
     }
 
     public void SwitchFocusToPlayer()
@@ -65,7 +74,7 @@ public class NPCConversationScript : MonoBehaviour
         _targetPlayer = null;
         _targetCamera = null;
 
-
+        _ui.Deactivate();
 
         attentionBubbleAnimator.Play("show");
     }
@@ -73,12 +82,14 @@ public class NPCConversationScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _ui = GameObject.FindGameObjectWithTag("NPCConversationUI").GetComponent<NPCConversationUI>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+        // debug
+        if (Input.GetKeyDown(KeyCode.Escape) && _isInConversation) EndConversation();
     }
 }
