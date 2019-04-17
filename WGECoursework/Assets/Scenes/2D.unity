@@ -1436,6 +1436,7 @@ GameObject:
   - component: {fileID: 1463855793}
   - component: {fileID: 1463855792}
   - component: {fileID: 1463855796}
+  - component: {fileID: 1463855797}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -1541,6 +1542,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conversation: {fileID: 4900000, guid: 165e4cb19c568274c974bc335a9d0ada, type: 3}
+--- !u!58 &1463855797
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463855791}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2.13
 --- !u!1 &1504267020
 GameObject:
   m_ObjectHideFlags: 0

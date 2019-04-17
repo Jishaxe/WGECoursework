@@ -52,6 +52,6 @@ public class CameraController : MonoBehaviour
         delta.x *= xtightness;
         delta.y *= ytightness;
 
-        this.transform.position += delta;// + offset;
+        this.transform.position += delta + offset;
     }
 }
