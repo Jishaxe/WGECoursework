@@ -11,6 +11,8 @@ public class CameraController : MonoBehaviour
     public float xtightness = 0.25f;
     public float ytightness = 0.25f;
     public float shakeAmount = 0.25f;
+    public float zoomLevel = 4f;
+    Camera cam;
 
     private void Awake()
     {
@@ -22,6 +24,7 @@ public class CameraController : MonoBehaviour
         StartCoroutine(CameraShake());
     }
 
+    
     IEnumerator CameraShake()
     {
         float shake = shakeAmount;
@@ -38,6 +41,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         initialZ = this.transform.position.z;
+        cam = GetComponent<Camera>();
     }
 
     void FixedUpdate()
@@ -51,6 +55,10 @@ public class CameraController : MonoBehaviour
         // smooth out the movement on both sides
         delta.x *= xtightness;
         delta.y *= ytightness;
+
+        float zoomDelta = zoomLevel - cam.orthographicSize;
+        zoomDelta *= xtightness;
+        cam.orthographicSize += zoomDelta;
 
         this.transform.position += delta + offset;
     }

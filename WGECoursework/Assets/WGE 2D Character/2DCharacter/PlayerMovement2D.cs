@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerMovement2D : MonoBehaviour {
     public delegate void PlayerEvent();
-    public  PlayerEvent OnPlayerLand;
+    public PlayerEvent OnPlayerLand;
 
     //member variables
     PlayerController2D _pController;
@@ -29,6 +29,9 @@ public class PlayerMovement2D : MonoBehaviour {
     public float _dashImpulse = 4f;
     public float _dashTime = 0.5f;
     Coroutine _dashReloadHandle = null;
+
+    public bool _isInConversation = false;
+    NPCConversationScript _conversationTarget;
 
     // Use this for initialization
     void Start () {
@@ -57,6 +60,7 @@ public class PlayerMovement2D : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+
         if (_mState == MovementState.DISABLED)
             return;
 
@@ -92,6 +96,23 @@ public class PlayerMovement2D : MonoBehaviour {
         }
 	}
 
+    // stops the player from moving and pushes them back if they got too close
+    public void StartConversationWith(NPCConversationScript npc)
+    {
+        // stop the player moving
+        _rBody.velocity = new Vector2(0, 0);
+        _isInConversation = true;
+        _conversationTarget = npc;
+        SwitchState(MovementState.DISABLED);
+    }
+
+    public void EndConversation()
+    {
+        _isInConversation = false;
+        _conversationTarget = null;
+        SwitchState(MovementState.ON_GROUND);
+    }
+
     void SwitchState(MovementState nextState)
     {
         _mState = nextState;
@@ -114,7 +135,9 @@ public class PlayerMovement2D : MonoBehaviour {
 
     void Move(float x)
     {
-        // push the camera target a little bit with our movement
+        // push the camera target a little bit with our movement (if the player isn't in conversation
+        if (_isInConversation) x = 0;
+
         _cameraTarget.transform.localPosition = new Vector3(_cameraTargetInitialPosition.x + x * _cameraPushMultiplier, _cameraTargetInitialPosition.y, _cameraTargetInitialPosition.z);
 
         switch (_mState)
