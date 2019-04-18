@@ -72,8 +72,14 @@ public class NPCConversationScript : MonoBehaviour
         };
 
 
-        _ui.PlayerOptions(new PlayerSpeechOption[] { option1, option2, option3 }, null);
+        _ui.PlayerOptions(new PlayerSpeechOption[] { option1, option2, option3 }, OnPlayerChooseOption);
         SwitchFocusToPlayer();
+    }
+
+    public void OnPlayerChooseOption(PlayerSpeechOption option)
+    {
+        SwitchFocusToNPC();
+        _ui.NPCSays("I see that you have picked option " + option.playerSays, OnPlayerContinue);
     }
 
     public void SwitchFocusToPlayer()
