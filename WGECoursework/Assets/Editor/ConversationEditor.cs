@@ -219,7 +219,7 @@ public class ConversationEditor : EditorWindow
     {
         NPCSpeech npcSpeech = conversation.CreateNPCSpeech(mousePosition);
 
-        ConversationNode node = new ConversationNode(npcSpeech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty);
+        ConversationNode node = new ConversationNode(npcSpeech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty, OnClickedSetAsStarter);
         nodes.Add(node);
 
         UpdateStartingSpeechNode();
@@ -229,7 +229,10 @@ public class ConversationEditor : EditorWindow
 
     void Save()
     {
-        // pick a filename
+        // only save if we actually have nodes to save
+        if (nodes.Count == 0) return;
+
+        // pick a filename. the filename is called Untitled if it has never been saved before
         if (conversation.fileName == "Untitled")
         {
             string path = EditorUtility.SaveFilePanel("Save Conversation as XML", "", "New conversation", ".xml");
@@ -289,7 +292,7 @@ public class ConversationEditor : EditorWindow
         // Create nodes from NPCSpeeches
         foreach (NPCSpeech speech in conversation.npcSpeeches)
         {
-            ConversationNode node = new ConversationNode(speech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty);
+            ConversationNode node = new ConversationNode(speech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty, OnClickedSetAsStarter);
             nodes.Add(node);
         }
 
@@ -342,7 +345,7 @@ public class ConversationEditor : EditorWindow
     }
 
     // called when Set as conversation starter on context menu is clicked
-    public void OnChangeStartingSpeech(ConversationNode newStarter)
+    public void OnClickedSetAsStarter(ConversationNode newStarter)
     {
         conversation.startingID = newStarter.npcSpeech.ID;
         UpdateStartingSpeechNode();

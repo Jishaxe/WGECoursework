@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Conversation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name />
+  <hideFlags>None</hideFlags>
+  <StartingID>eabd44d15408afa438496b912fa17cc4</StartingID>
+  <NPCSpeeches>
+    <NPCSpeech ID="eabd44d15408afa438496b912fa17cc4" x="84" y="103">
+      <NPCSays>Hello, this is a conversation starter!</NPCSays>
+      <Options>
+        <OptionID>d3f5aba60d7d73f428d06c8f83ee5d24</OptionID>
+        <OptionID>541b1e878e2c9a6499a6d9abf49077d0</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="209585733fa75684e85f99211172dfc2" x="389" y="90">
+      <NPCSays>lmao ok son</NPCSays>
+      <Options>
+        <OptionID>d1dda656f65b8b54abf9273808cad3c9</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="2a3959e505d295446a99058ac30ae164" x="388" y="435">
+      <NPCSays>haha gtf</NPCSays>
+      <Options>
+        <OptionID>0466e6455bd78504fab1bde4ca1b2e97</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="27031fe4dd3d0bb46b440b7e3a964ca2" x="751" y="352">
+      <NPCSays>bye lmao</NPCSays>
+      <Options />
+    </NPCSpeech>
+  </NPCSpeeches>
+  <PlayerOptions>
+    <PlayerSpeechOption ID="d3f5aba60d7d73f428d06c8f83ee5d24">
+      <Result>209585733fa75684e85f99211172dfc2</Result>
+      <PlayerSays>Cool.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="541b1e878e2c9a6499a6d9abf49077d0">
+      <Result>2a3959e505d295446a99058ac30ae164</Result>
+      <PlayerSays>Awesome.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="d1dda656f65b8b54abf9273808cad3c9">
+      <Result>27031fe4dd3d0bb46b440b7e3a964ca2</Result>
+      <PlayerSays>ok bye</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="0466e6455bd78504fab1bde4ca1b2e97">
+      <Result>27031fe4dd3d0bb46b440b7e3a964ca2</Result>
+      <PlayerSays>ok bye</PlayerSays>
+    </PlayerSpeechOption>
+  </PlayerOptions>
+</Conversation>

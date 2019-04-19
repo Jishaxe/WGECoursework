@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+// Represents the actual, interactive node on the screen (as opposed to the more abstract Conversation stuff)
 public class ConversationNode
 {
     public Rect rect;
@@ -28,10 +29,11 @@ public class ConversationNode
     public Action<ConversationNode> OnRemoveNode;
     Action<ConnectionPoint> OnClickOutPoint;
     Action<ConnectionPoint> OnRemoveOutPoint;
+    public Action<ConversationNode> OnClickedSetAsStarter;
     Action OnDirty;
     public bool isStarter;
 
-    public ConversationNode(NPCSpeech npcSpeech, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, GUIStyle textStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode, Action<ConnectionPoint> OnRemoveOutPoint, Action OnDirty)
+    public ConversationNode(NPCSpeech npcSpeech, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, GUIStyle textStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode, Action<ConnectionPoint> OnRemoveOutPoint, Action OnDirty, Action<ConversationNode> OnClickedSetAsStarter)
     {
         rect = new Rect(npcSpeech.x, npcSpeech.y, 0, 0);
         currentStyle = defaultNodeStyle = nodeStyle;
@@ -47,7 +49,7 @@ public class ConversationNode
         this.OnClickOutPoint = OnClickOutPoint;
         this.OnRemoveOutPoint = OnRemoveOutPoint;
         this.OnDirty = OnDirty;
-
+        this.OnClickedSetAsStarter = OnClickedSetAsStarter;
         if (npcSpeech.playerOptions != null)
         {
             foreach (PlayerSpeechOption option in npcSpeech.playerOptions)
@@ -200,12 +202,21 @@ public class ConversationNode
     {
         GenericMenu menu = new GenericMenu();
         menu.AddItem(new GUIContent("Remove node"), false, OnClickRemoveNode);
+        menu.AddItem(new GUIContent("Set as Conversation Starter"), false, OnClickSetAsConversationStarterButton);
         menu.ShowAsContext();
+    }
+
+    // only used in conversationnnode
+    private void OnClickSetAsConversationStarterButton()
+    {
+        OnClickedSetAsStarter(this);
+        OnDirty();
     }
 
     private void OnClickRemoveNode()
     {
-        OnRemoveNode?.Invoke(this);
+        // 
+        OnRemoveNode(this);
     }
 
     public bool ProcessEvents(Event e)

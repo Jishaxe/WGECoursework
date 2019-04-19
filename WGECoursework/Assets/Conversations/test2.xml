@@ -4,7 +4,7 @@
   <hideFlags>None</hideFlags>
   <StartingID>f359e40f74c1e8e48b6ac8c616a7d81d</StartingID>
   <NPCSpeeches>
-    <NPCSpeech ID="f359e40f74c1e8e48b6ac8c616a7d81d" x="217" y="226">
+    <NPCSpeech ID="f359e40f74c1e8e48b6ac8c616a7d81d" x="161" y="33">
       <NPCSays>Hey, how's it going?</NPCSays>
       <Options>
         <OptionID>c2876c7a8bc52b44c954378374516460</OptionID>
@@ -12,26 +12,26 @@
         <OptionID>f7c7016f5e3eaae439cceae83b542413</OptionID>
       </Options>
     </NPCSpeech>
-    <NPCSpeech ID="a1502b4ad385d174c8cf5ea90c5e3b51" x="525" y="120">
+    <NPCSpeech ID="a1502b4ad385d174c8cf5ea90c5e3b51" x="469" y="-73">
       <NPCSays>That's good to hear.</NPCSays>
       <Options>
         <OptionID>226139e2a6c9b4e4286fa323f9b2650e</OptionID>
       </Options>
     </NPCSpeech>
-    <NPCSpeech ID="850575bb61839114a8f7957bf0eb1fca" x="515" y="480">
+    <NPCSpeech ID="850575bb61839114a8f7957bf0eb1fca" x="459" y="287">
       <NPCSays>Aww, that's a shame.</NPCSays>
       <Options>
         <OptionID>bc800ba31eef0134782ca0a93b0485ee</OptionID>
       </Options>
     </NPCSpeech>
-    <NPCSpeech ID="fc555dc8b6dfda846bd0644637a16dec" x="519" y="840">
+    <NPCSpeech ID="fc555dc8b6dfda846bd0644637a16dec" x="463" y="647">
       <NPCSays>No need to brag about it.</NPCSays>
       <Options>
         <OptionID>c8c744f22986e0c4397bbc2e5215a8b1</OptionID>
         <OptionID>857aaeb967ac756448fc8bf100ae943a</OptionID>
       </Options>
     </NPCSpeech>
-    <NPCSpeech ID="6e4ce0259107bbc46aa104d69b114470" x="822" y="605">
+    <NPCSpeech ID="6e4ce0259107bbc46aa104d69b114470" x="772" y="342">
       <NPCSays>Sorry I'm not in a great mood today.</NPCSays>
       <Options>
         <OptionID>7e14ad086d48c694e84e1ae8e53478fd</OptionID>
