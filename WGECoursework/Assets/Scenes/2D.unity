@@ -732,7 +732,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609484268}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 35, y: -2.9, z: -9.419922}
+  m_LocalPosition: {x: -10.92, y: -0.92, z: -9.419922}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2003,11 +2003,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 26.1
+      value: -12.23
       objectReference: {fileID: 0}
     - target: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.56
       objectReference: {fileID: 0}
     - target: {fileID: 4101536231121934, guid: af013052b86cd6d42a2ea33b8533664a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2049,10 +2049,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1463855795}
+  - component: {fileID: 1463855796}
   - component: {fileID: 1463855794}
   - component: {fileID: 1463855793}
   - component: {fileID: 1463855792}
-  - component: {fileID: 1463855796}
   - component: {fileID: 1463855797}
   m_Layer: 0
   m_Name: NPC
@@ -2159,7 +2159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95997d13890ef2439e7d01ef434b674, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conversation: {fileID: 4900000, guid: 165e4cb19c568274c974bc335a9d0ada, type: 3}
+  conversationData: {fileID: 4900000, guid: 60e01ff8630e2a345926f13c4992cf9f, type: 3}
   attentionBubbleAnimator: {fileID: 1812208544}
   zoomLevel: 2
 --- !u!58 &1463855797

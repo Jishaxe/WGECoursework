@@ -20,6 +20,7 @@ public class NPCConversationScript : MonoBehaviour
     private CameraController _targetCamera;
     private Conversation conversation; // the conversation loaded from the textasset
     private float _prevZoomLevel; // zoom level of cam before we entered conversation
+    private NPCSpeech currentSpeech; // the current NPCspeech that is being spoken or an option being chosen of 
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -52,35 +53,38 @@ public class NPCConversationScript : MonoBehaviour
         // show the UI
         _ui.Activate();
 
-        _ui.NPCSays("HELLO THERE HOW ARE YOU DOING MY SON", OnPlayerContinue);
+        currentSpeech = conversation.GetStartingSpeech();
+        _ui.NPCSays(currentSpeech.npcSays, OnPlayerContinue);
     }
 
     public void OnPlayerContinue()
     {
-        PlayerSpeechOption option1 = new PlayerSpeechOption
+        // finished!
+        if (currentSpeech.playerOptions.Count == 0)
         {
-            playerSays = "Option 1"
-        };
+            EndConversation();
+            return;
+        }
 
-        PlayerSpeechOption option2 = new PlayerSpeechOption
-        {
-            playerSays = "Option 2"
-        };
-
-        PlayerSpeechOption option3 = new PlayerSpeechOption
-        {
-            playerSays = "Option 3"
-        };
-
-
-        _ui.PlayerOptions(new PlayerSpeechOption[] { option1, option2, option3 }, OnPlayerChooseOption);
+        _ui.PlayerOptions(currentSpeech.playerOptions.ToArray(), OnPlayerChooseOption);
         SwitchFocusToPlayer();
     }
 
     public void OnPlayerChooseOption(PlayerSpeechOption option)
     {
         SwitchFocusToNPC();
-        _ui.NPCSays("I see that you have picked option " + option.playerSays, OnPlayerContinue);
+
+        currentSpeech = option.result;
+
+
+        // finished!
+        if (currentSpeech == null)
+        {
+            EndConversation();
+            return;
+        }
+
+        _ui.NPCSays(currentSpeech.npcSays, OnPlayerContinue);
     }
 
     public void SwitchFocusToPlayer()

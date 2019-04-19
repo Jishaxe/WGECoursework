@@ -153,6 +153,13 @@ public class Conversation: ScriptableObject
         return option;
     }
 
+
+    public NPCSpeech GetStartingSpeech()
+    {
+        return GetNPCSpeechByID(startingID);
+    }
+
+
     public NPCSpeech GetNPCSpeechByID(string id)
     {
         foreach (NPCSpeech npcSpeech in npcSpeeches)
