@@ -2,33 +2,6 @@
 <Conversation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <name />
   <hideFlags>None</hideFlags>
-  <NPCSpeeches>
-    <NPCSpeech ID="58735b6a821220c48855fe7e55ecc8e8" x="121" y="74">
-      <NPCSays>fgf</NPCSays>
-      <Options>
-        <OptionID>976d247bf2bea3d41b42e86a060437b6</OptionID>
-        <OptionID>fd661c8fe7e836f49ae2351ee144c9eb</OptionID>
-      </Options>
-    </NPCSpeech>
-    <NPCSpeech ID="25dbfe443e993cc45a21d6238199a7f0" x="586" y="34">
-      <Options>
-        <OptionID>90fbf42cf017da141b682f727defce7f</OptionID>
-      </Options>
-    </NPCSpeech>
-    <NPCSpeech ID="9c2454cc76c7fe24a81261be11bea14f" x="1014" y="282">
-      <Options>
-        <OptionID>53c6bbb149c96754fa6e67d8091ab1f6</OptionID>
-      </Options>
-    </NPCSpeech>
-  </NPCSpeeches>
-  <PlayerOptions>
-    <PlayerSpeechOption ID="90fbf42cf017da141b682f727defce7f">
-      <Result>9c2454cc76c7fe24a81261be11bea14f</Result>
-    </PlayerSpeechOption>
-    <PlayerSpeechOption ID="53c6bbb149c96754fa6e67d8091ab1f6" />
-    <PlayerSpeechOption ID="976d247bf2bea3d41b42e86a060437b6">
-      <Result>25dbfe443e993cc45a21d6238199a7f0</Result>
-    </PlayerSpeechOption>
-    <PlayerSpeechOption ID="fd661c8fe7e836f49ae2351ee144c9eb" />
-  </PlayerOptions>
+  <NPCSpeeches />
+  <PlayerOptions />
 </Conversation>

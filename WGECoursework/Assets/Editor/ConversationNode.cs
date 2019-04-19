@@ -29,7 +29,7 @@ public class ConversationNode
     Action<ConnectionPoint> OnClickOutPoint;
     Action<ConnectionPoint> OnRemoveOutPoint;
     Action OnDirty;
-
+    public bool isStarter;
 
     public ConversationNode(NPCSpeech npcSpeech, GUIStyle nodeStyle, GUIStyle selectedNodeStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, GUIStyle textStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<ConversationNode> OnRemoveNode, Action<ConnectionPoint> OnRemoveOutPoint, Action OnDirty)
     {
@@ -76,14 +76,17 @@ public class ConversationNode
 
     public void Draw()
     {
+        float starterOffset = 0;
+        if (isStarter) starterOffset = 30;
+
         // calculate height
         if (npcSpeech.playerOptions != null)
         {
-            rect.height = 200 + (150 * (npcSpeech.playerOptions.Count));
+            rect.height = 200 + starterOffset + (150 * (npcSpeech.playerOptions.Count));
         }
         else
         {
-            rect.height = 200;
+            rect.height = 200 + starterOffset;
         }
 
         List<PlayerSpeechOption> optionsToDelete = new List<PlayerSpeechOption>();
@@ -93,8 +96,18 @@ public class ConversationNode
        // outPoint.Draw();
         GUI.Box(rect, title, currentStyle);
 
-        EditorGUI.LabelField(new Rect(rect.x + 10, rect.y + 10, rect.width, 10f), new GUIContent("NPC says:"), textStyle);
-        string newText = EditorGUI.TextArea(new Rect(rect.x + 10, rect.y + 30, rect.width - 20, 100), npcSpeech.npcSays);
+        if (isStarter)
+        {
+            GUIStyle startsHere = new GUIStyle();
+            startsHere.normal.textColor = Color.white;
+            startsHere.fontStyle = FontStyle.Bold;
+            startsHere.fontSize = 16;
+            startsHere.alignment = TextAnchor.MiddleCenter;
+            EditorGUI.LabelField(new Rect(rect.x, rect.y + 10, rect.width, 30f), new GUIContent("STARTS HERE"), startsHere);
+        }
+
+        EditorGUI.LabelField(new Rect(rect.x + 10, rect.y + 10 + starterOffset, rect.width, 10f), new GUIContent("NPC says:"), textStyle);
+        string newText = EditorGUI.TextArea(new Rect(rect.x + 10, rect.y + 30 + starterOffset, rect.width - 20, 100), npcSpeech.npcSays);
         if (newText != npcSpeech.npcSays)
         {
             npcSpeech.npcSays = newText;
@@ -103,7 +116,7 @@ public class ConversationNode
 
         EditorGUI.LabelField(new Rect(rect.x + 10, rect.y + rect.height - 50, rect.width - 20, 2f), "", GUI.skin.horizontalSlider);
 
-        float startingY = rect.y + 150;
+        float startingY = rect.y + 150 + starterOffset;
 
 
         if (npcSpeech.playerOptions != null)

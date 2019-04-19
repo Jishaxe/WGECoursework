@@ -221,6 +221,9 @@ public class ConversationEditor : EditorWindow
 
         ConversationNode node = new ConversationNode(npcSpeech, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, textStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnRemoveConnectionPoint, OnDirty);
         nodes.Add(node);
+
+        UpdateStartingSpeechNode();
+
         dirty = true;
     }
 
@@ -305,6 +308,8 @@ public class ConversationEditor : EditorWindow
                 }
             }
         }
+
+        UpdateStartingSpeechNode();
     }
 
     public ConversationNode GetNodeFromNPCSpeech(NPCSpeech speech)
@@ -329,10 +334,28 @@ public class ConversationEditor : EditorWindow
         }
 
         conversation.RemoveNPCSpeech(node.npcSpeech);
+        UpdateStartingSpeechNode();
         nodes.Remove(node);
 
         dirty = true;
         GUI.changed = true;
+    }
+
+    // called when Set as conversation starter on context menu is clicked
+    public void OnChangeStartingSpeech(ConversationNode newStarter)
+    {
+        conversation.startingID = newStarter.npcSpeech.ID;
+        UpdateStartingSpeechNode();
+    }
+
+    // goes through all the nodes and sets node.isStarter according to whether it matches conversation.startingID
+    public void UpdateStartingSpeechNode()
+    {
+        foreach (ConversationNode node in nodes)
+        {
+            if (node.npcSpeech.ID == conversation.startingID) node.isStarter = true;
+            else node.isStarter = false;
+        }
     }
 
     void OnClickInPoint(ConnectionPoint inPoint)

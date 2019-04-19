@@ -6,7 +6,7 @@ using UnityEngine;
 public class NPCConversationScript : MonoBehaviour
 {
     // the conversation to use for this interaction
-    public TextAsset conversation;
+    public TextAsset conversationData;
 
     public Animator attentionBubbleAnimator;
 
@@ -18,6 +18,7 @@ public class NPCConversationScript : MonoBehaviour
     private bool _isInConversation = false;
     private PlayerMovement2D _targetPlayer;
     private CameraController _targetCamera;
+    private Conversation conversation; // the conversation loaded from the textasset
     private float _prevZoomLevel; // zoom level of cam before we entered conversation
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -113,6 +114,9 @@ public class NPCConversationScript : MonoBehaviour
     void Start()
     {
         _ui = GameObject.FindGameObjectWithTag("NPCConversationUI").GetComponent<NPCConversationUI>();
+
+        // load the conversation
+        conversation = Conversation.LoadFromXML(conversationData);
     }
 
     // Update is called once per frame

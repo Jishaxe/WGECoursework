@@ -74,6 +74,11 @@ public class Conversation: ScriptableObject
     [XmlIgnore]
     TextAsset textAsset;
 
+    // the ID for the speech that starts
+    // this does mean that conversations can only be started by the NPC
+    [XmlElement("StartingID")]
+    public string startingID;
+
     [XmlArray("NPCSpeeches")]
     public List<NPCSpeech> npcSpeeches;
 
@@ -89,14 +94,26 @@ public class Conversation: ScriptableObject
 
     public NPCSpeech CreateNPCSpeech(Vector2 position)
     {
-        NPCSpeech speech = new NPCSpeech();
-        speech.playerOptions = new List<PlayerSpeechOption>();
-        speech.playerOptionIDs = new List<string>();
-        speech.x = (int)position.x;
-        speech.y = (int)position.y;
-        speech.ID = GUID.Generate().ToString();
-        speech.converation = this;
+        NPCSpeech speech = new NPCSpeech
+        {
+            playerOptions = new List<PlayerSpeechOption>(),
+            playerOptionIDs = new List<string>(),
+            x = (int)position.x,
+            y = (int)position.y,
+            ID = GUID.Generate().ToString(),
+            converation = this
+        };
         npcSpeeches.Add(speech);
+
+        Debug.Log("Creating a new NPC speech, there are currently: " + npcSpeeches.Count);
+
+        // if this is the first speech, assign it as the first one
+        if (npcSpeeches.Count == 1)
+        {
+            startingID = speech.ID;
+            Debug.Log("Setting as starter as this is the first speech");
+        }
+
         return speech;
     }
 
@@ -104,6 +121,13 @@ public class Conversation: ScriptableObject
     {
         foreach (PlayerSpeechOption option in speech.playerOptions) playerSpeechOptions.Remove(option);
         npcSpeeches.Remove(speech);
+
+        // if this speech was the starting speech, reassign it to the first speech
+        if (startingID == speech.ID)
+        {
+            if (npcSpeeches.Count > 0) startingID = npcSpeeches[0].ID;
+            else startingID = null;
+        }
     }
 
     public void RemovePlayerSpeechOption(PlayerSpeechOption option)
@@ -150,6 +174,7 @@ public class Conversation: ScriptableObject
         Debug.Log("Couldn't find player speech option by ID: " + id);
         return null;
     }
+
     public static Conversation LoadFromXML(TextAsset textAsset)
     {
         string fileName = AssetDatabase.GetAssetPath(textAsset.GetInstanceID());
@@ -179,6 +204,12 @@ public class Conversation: ScriptableObject
             if (option.resultID != null) option.result = conversation.GetNPCSpeechByID(option.resultID);
         }
 
+        Debug.Log("Starting ID: " + conversation.startingID);
+        if (conversation.startingID == null)
+        {
+            Debug.Log("Empty starting ID, assigning to first NPCSpeech");
+            conversation.startingID = conversation.npcSpeeches[0].ID;
+        }
 
         conversation.fileName = fileName;
         return conversation;
@@ -186,16 +217,6 @@ public class Conversation: ScriptableObject
 
     public void SaveToXML(string fileName)
     {
-        /*
-        XmlWriter xml = XmlWriter.Create(fileName);
-
-        xml.WriteStartDocument();
-        xml.WriteStartElement("Conversation");
-
-        xml.WriteEndElement();
-        xml.WriteEndDocument();
-        */
-
         XmlSerializer serializer = new XmlSerializer(typeof(Conversation));
         StreamWriter writer = new StreamWriter(fileName, false);
         serializer.Serialize(writer.BaseStream, this);
