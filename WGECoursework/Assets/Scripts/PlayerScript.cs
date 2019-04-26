@@ -77,10 +77,13 @@ public class PlayerScript : MonoBehaviour
 
         if (Physics.Raycast(ray, out raycastHit, 4f, LayerMask.GetMask("Blocks")))
         {
+            // Get the chunk for this block
             currentChunk = raycastHit.collider.gameObject.GetComponent<VoxelChunk>();
 
-            if (currentChunk == null) return;
+            // Find the position of the block local to its chunk
             raycastHit.point = currentChunk.transform.InverseTransformPoint(raycastHit.point);
+
+            // Subtracting half the normal from the point will always yield a point inside the block, which we can then floor to get the corner of the block
             Vector3 cornerOfBlock = raycastHit.point - (raycastHit.normal / 2);
             cornerOfBlock = new Vector3(Mathf.Floor(cornerOfBlock.x),
                                               Mathf.Floor(cornerOfBlock.y),
@@ -105,15 +108,14 @@ public class PlayerScript : MonoBehaviour
                 Debug.DrawLine(cornerOfBlock, blockPlacementPoint, Color.yellow);
             }
 
+            // place the block shadow
             blockShadow.SetActive(true);
-            blockShadow.transform.position = currentChunk.transform.TransformPoint(blockPlacementPoint); //+ blockShadowOffset;
+            blockShadow.transform.position = currentChunk.transform.TransformPoint(blockPlacementPoint);
 
             if (fps.m_MouseLook.m_cursorIsLocked)
             {
                 if (Input.GetMouseButtonUp(1))
                 {
-                    Debug.Log("placing " + blockToPlace);
-                    // Place a block if we have one selected
                     if (blockToPlace != 0) PlaceBlock(blockPlacementPoint, currentChunk, blockToPlace);
                 }
                 if (Input.GetMouseButtonUp(0)) DigBlock(currentSelectedBlock, currentChunk);

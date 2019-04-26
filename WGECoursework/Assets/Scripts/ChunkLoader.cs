@@ -55,6 +55,7 @@ public class ChunkLoader : MonoBehaviour
 
             progressMade++;
 
+            // call the onloadprogress every 100 blocks to avoid slowing it down too much
             if (progressMade > 100)
             {
                 progressMade = 0;
@@ -90,10 +91,6 @@ public class ChunkLoader : MonoBehaviour
 
     }
 
-    public void Update()
-    {
-    }
-
     public void OnStartLoad(string filename)
     {
         StartCoroutine(LoadChunk(filename));
@@ -104,3 +101,5 @@ public class ChunkLoader : MonoBehaviour
         StartScreenScript.OnStartLoad += OnStartLoad;
     }
 }
+
+

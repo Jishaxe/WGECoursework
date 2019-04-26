@@ -29,7 +29,9 @@ public class CameraController : MonoBehaviour
     {
         float shake = shakeAmount;
 
+        // keep shaking until the shake amount has been reduced to a negligible value
         while (shake > 0.05f) {
+            // the calculated offset here is applied to the camera position in FixedUpdate
             offset = new Vector3(Random.Range(-shake, shake), Random.Range(-shake, shake), 0);
             shake /= 2;
             yield return null;

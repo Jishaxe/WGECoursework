@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Conversation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name />
+  <hideFlags>None</hideFlags>
+  <StartingID>b2c8b28389f4ead458b8990eb5900cf2</StartingID>
+  <NPCSpeeches>
+    <NPCSpeech ID="b2c8b28389f4ead458b8990eb5900cf2" x="902" y="280">
+      <Options />
+    </NPCSpeech>
+  </NPCSpeeches>
+  <PlayerOptions />
+</Conversation>

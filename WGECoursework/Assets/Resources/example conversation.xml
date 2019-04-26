@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<Conversation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name />
+  <hideFlags>None</hideFlags>
+  <StartingID>555917f0bc24d1f42b052fb971575ea0</StartingID>
+  <NPCSpeeches>
+    <NPCSpeech ID="340f0ca7b5f9a2d4195beab9c8426452" x="282" y="188">
+      <NPCSays>This is the starting NPC speech.</NPCSays>
+      <Options>
+        <OptionID>2127380e10eac234cbac0728182d2c15</OptionID>
+        <OptionID>36e655f51ebabce4bbc54a26104631d9</OptionID>
+      </Options>
+    </NPCSpeech>
+    <NPCSpeech ID="66ce0ea7dc7f5f746aadc18e231cb827" x="649" y="208">
+      <NPCSays>A response to player option #1.</NPCSays>
+      <Options />
+    </NPCSpeech>
+    <NPCSpeech ID="45d63fe388418d34c900081fe4ca0916" x="654" y="482">
+      <NPCSays>A response to player option #2.</NPCSays>
+      <Options />
+    </NPCSpeech>
+  </NPCSpeeches>
+  <PlayerOptions>
+    <PlayerSpeechOption ID="2127380e10eac234cbac0728182d2c15">
+      <Result>66ce0ea7dc7f5f746aadc18e231cb827</Result>
+      <PlayerSays>This is player option #1.</PlayerSays>
+    </PlayerSpeechOption>
+    <PlayerSpeechOption ID="36e655f51ebabce4bbc54a26104631d9">
+      <Result>45d63fe388418d34c900081fe4ca0916</Result>
+      <PlayerSays>This is player option #2.</PlayerSays>
+    </PlayerSpeechOption>
+  </PlayerOptions>
+</Conversation>

@@ -94,6 +94,9 @@ public class Conversation: ScriptableObject
 
     public NPCSpeech CreateNPCSpeech(Vector2 position)
     {
+        // can't use GUID in build
+        #if (UNITY_EDITOR)
+
         NPCSpeech speech = new NPCSpeech
         {
             playerOptions = new List<PlayerSpeechOption>(),
@@ -115,6 +118,10 @@ public class Conversation: ScriptableObject
         }
 
         return speech;
+
+#endif
+
+        return null;
     }
 
     public void RemoveNPCSpeech(NPCSpeech speech)
@@ -143,6 +150,8 @@ public class Conversation: ScriptableObject
 
     public PlayerSpeechOption CreatePlayerSpeechOption(NPCSpeech speech)
     {
+        // can't use GUID in build
+        #if (UNITY_EDITOR)
         Debug.Log("making new speech option");
         PlayerSpeechOption option = new PlayerSpeechOption();
         option.ID = GUID.Generate().ToString();
@@ -151,6 +160,9 @@ public class Conversation: ScriptableObject
 
         playerSpeechOptions.Add(option);
         return option;
+#endif
+
+        return null;
     }
 
 
@@ -184,7 +196,11 @@ public class Conversation: ScriptableObject
 
     public static Conversation LoadFromXML(TextAsset textAsset)
     {
-        string fileName = AssetDatabase.GetAssetPath(textAsset.GetInstanceID());
+        string fileName = "Untitled";
+        // AssetDatabase is editor only
+        #if (UNITY_EDITOR) 
+        fileName = AssetDatabase.GetAssetPath(textAsset.GetInstanceID());
+        #endif
 
         XmlSerializer xml = new XmlSerializer(typeof(Conversation));
         StringReader reader = new StringReader(textAsset.text);
@@ -224,6 +240,7 @@ public class Conversation: ScriptableObject
 
     public void SaveToXML(string fileName)
     {
+        #if (UNITY_EDITOR)
         XmlSerializer serializer = new XmlSerializer(typeof(Conversation));
         StreamWriter writer = new StreamWriter(fileName, false);
         serializer.Serialize(writer.BaseStream, this);
@@ -232,5 +249,6 @@ public class Conversation: ScriptableObject
         AssetDatabase.ImportAsset(fileName);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+        #endif
     }
 }

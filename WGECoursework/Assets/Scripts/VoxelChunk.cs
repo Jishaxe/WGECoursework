@@ -105,8 +105,8 @@ public class VoxelChunk : MonoBehaviour {
                                 break;
                         }
 
+                        // get the UVs for this given block type
                         Vector2 uvs = VoxelGenerator.Block2UV(tex);
-                        //voxelGenerator.CreateVoxel(x, y, z, tex);
 
                         // check if we need to draw the positive x face
                         if (x == 0 || terrainArray[x - 1, y, z] == 0)

@@ -23,6 +23,7 @@ public class HotbarScript : MonoBehaviour
     public InventoryItemScript item3;
     public InventoryItemScript item4;
 
+    // sprites that represent the buttons
     public Sprite azDescendingSpr;
     public Sprite azAscendingSpr;
 
@@ -155,9 +156,9 @@ public class HotbarScript : MonoBehaviour
         item4.Hide();
 
         foreach (InventoryItemScript item in new InventoryItemScript[]{ item1, item2, item3, item4}) {
+            // if there is a quantity of this block and the blockType enum contains the given text, show it
             if (item.amount > 0 && item.blockType.ToString().ToLower().Contains(text.ToLower()))
             {
-                Debug.Log("Apparently, " + item.blockType.ToString() + " contains " + text);
                 item.Show();
             }
 
